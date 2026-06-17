@@ -6,10 +6,17 @@ APP_NAME="pale_frontier"
 
 SOURCES=(
     "src/main.cpp"
-    "src/utils.cpp"
+    "src/fastrand.cpp"
+)
+
+LIBS=(
+    "libs/raylib/libraylib.a"
 )
 
 HEADERS=(
-    "src/main.h"
-    "src/utils.h"
+    "src/main.hpp"
+    "src/fastrand.hpp"
+    "libs/raylib/raylib.h"
+    "libs/raylib/raymath.h"
+    "libs/raylib/rlgl.h"
 )

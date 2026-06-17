@@ -42,7 +42,7 @@ mkdir -p build-windows
 
 # Compile with MinGW-w64 for Windows
 echo "Compiling with MinGW-w64..."
-x86_64-w64-mingw32-g++ -std=c++17 \
+x86_64-w64-mingw32-g++ -std=c++20 \
     -O2 \
     -Wall \
     -Wextra \
@@ -54,6 +54,7 @@ x86_64-w64-mingw32-g++ -std=c++17 \
     -mwindows \
     -o "build-windows/$APP_NAME.exe" \
     "${SOURCES[@]}" \
+    "${LIBS[@]}" \
     -luser32 \
     -lgdi32 \
     -lkernel32 \
