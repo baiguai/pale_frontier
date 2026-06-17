@@ -21,7 +21,7 @@ if [ ! -d "build" ]; then
 fi
 
 echo "Building Windows EXE..."
-./build-windows.sh
+./build-windows.sh || echo "Warning: Windows build failed, continuing with Linux build..."
 
 # Navigate to build directory
 cd build
@@ -43,6 +43,11 @@ sed -i "/^<<SOURCES>>$/{
     d
 }" ../CMakeLists.txt
 rm -f "$SOURCES_TMP"
+
+# Inject library files
+for lib in "${LIBS[@]}"; do
+    echo "target_link_libraries($APP_NAME PRIVATE \${CMAKE_SOURCE_DIR}/$lib)" >> ../CMakeLists.txt
+done
 
 # Configure with CMake
 echo "Configuring with CMake..."
