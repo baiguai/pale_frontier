@@ -11,4 +11,6 @@ struct Point
     int y;
 };
 
+void drawSpace();
+
 #endif
