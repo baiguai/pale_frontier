@@ -4,10 +4,10 @@ void drawPlanets()
 {
     const Color planet_color_01 = Color{ 174, 187, 213, 255 };
 
-    int sec_num_x = GetScreenWidth() / sector_size;
-    int sec_num_y = GetScreenHeight() / sector_size;
+    int sec_num_x = GetScreenWidth() / planet_sector_size;
+    int sec_num_y = GetScreenHeight() / planet_sector_size;
 
-    float radius = sector_size / 2.0;
+    float radius = planet_sector_size * 3.0;
 
     for (int x = 0; x < sec_num_x; x++)
     {
@@ -19,7 +19,7 @@ void drawPlanets()
 
             if (frand.randInteger(0, planet_distance) == 1)
             {
-                DrawCircle((x * sector_size) + radius, (y * sector_size) + radius, radius, planet_color_01);
+                DrawCircle((x * planet_sector_size) + radius, (y * planet_sector_size) + radius, radius, planet_color_01);
             }
         }
     }
