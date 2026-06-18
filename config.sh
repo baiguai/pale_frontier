@@ -6,6 +6,8 @@ APP_NAME="pale_frontier"
 
 SOURCES=(
     "src/main.cpp"
+    "src/planets.cpp"
+    "src/stars.cpp"
     "src/fastrand.cpp"
 )
 
@@ -14,7 +16,10 @@ LIBS=(
 )
 
 HEADERS=(
+    "src/global.hpp"
     "src/main.hpp"
+    "src/planets.hpp"
+    "src/stars.hpp"
     "src/fastrand.hpp"
     "libs/raylib/raylib.h"
     "libs/raylib/raymath.h"
