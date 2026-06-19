@@ -16,12 +16,15 @@ LIBS=(
 )
 
 HEADERS=(
+    "src/config.hpp"
+    "src/fileio.hpp"
     "src/global.hpp"
     "src/main.hpp"
     "src/planets.hpp"
     "src/stars.hpp"
     "src/fastrand.hpp"
     "libs/raylib/raylib.h"
+    "libs/nlohmann/json.hpp"
     "libs/raylib/raymath.h"
     "libs/raylib/rlgl.h"
 )
