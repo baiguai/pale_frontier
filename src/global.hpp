@@ -7,7 +7,8 @@
 const int window_height { 720 };
 const int window_width { 1080 };
 const char* const title { "Pale Frontier" };
-inline Point camera{ 0, 0 };
+inline Vector2 camera{ 0, 0 };
+inline float speed {0.5f };
 const int planet_sector_size { 8 };
 const int star_sector_size_01 { 1 };
 const int star_sector_size_02 { 2 };

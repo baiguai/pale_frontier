@@ -2,6 +2,7 @@
 #include "global.hpp"
 #include "planets.hpp"
 #include "stars.hpp"
+#include "fileio.hpp"
 
 int main(void)
 {
@@ -9,6 +10,8 @@ int main(void)
     SetTargetFPS(60);
 
     bool running {true };
+
+    createDirectories("data/player");
 
     while (running)
     {
@@ -29,21 +32,23 @@ int main(void)
             drawSpace();
 
 
+            float moveAmount = speed * 60.0f * GetFrameTime();
+
             if (IsKeyDown(KEY_D))
             {
-                camera.y += 1; // KEYPAD_SENSE - 0.15f;
+                camera.y += moveAmount;
             }
             if (IsKeyDown(KEY_E))
             {
-                camera.y -= 1;
+                camera.y -= moveAmount;
             }
             if (IsKeyDown(KEY_S))
             {
-                camera.x -= 1;
+                camera.x -= moveAmount;
             }
             if (IsKeyDown(KEY_F))
             {
-                camera.x += 1;
+                camera.x += moveAmount;
             }
 
 
