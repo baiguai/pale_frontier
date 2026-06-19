@@ -1,17 +1,19 @@
 #include "main.hpp"
-#include "global.hpp"
-#include "planets.hpp"
-#include "stars.hpp"
-#include "fileio.hpp"
 
 int main(void)
 {
+    SetConfigFlags(FLAG_FULLSCREEN_MODE);
     InitWindow(window_width, window_height, title);
     SetTargetFPS(60);
+    HideCursor();
 
     bool running {true };
 
     createDirectories("data/player");
+
+    // Restore the player's position
+    camera.x = readJsonValue("data/player/stats.json", "game.location.x", 0);
+    camera.y = readJsonValue("data/player/stats.json", "game.location.y", 0);
 
     while (running)
     {
@@ -56,6 +58,10 @@ int main(void)
 
         EndDrawing();
     }
+
+    // Store the player's position
+    saveJsonValue("data/player/stats.json", "game.location.x", static_cast<int>(floor(camera.x)));
+    saveJsonValue("data/player/stats.json", "game.location.y", static_cast<int>(floor(camera.y)));
 
 
     CloseWindow();

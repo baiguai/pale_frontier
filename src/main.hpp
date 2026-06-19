@@ -4,6 +4,12 @@
 #include "../libs/raylib/raylib.h"
 #include "fastrand.hpp"
 #include <iostream>
+#include <cmath>
+#include "main.hpp"
+#include "global.hpp"
+#include "planets.hpp"
+#include "stars.hpp"
+#include "fileio.hpp"
 
 struct Point
 {
