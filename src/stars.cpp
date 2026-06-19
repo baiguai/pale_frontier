@@ -21,7 +21,7 @@ void drawStars2()
     int sec_num_x = GetScreenWidth() / star_sector_size_02;
     int sec_num_y = GetScreenHeight() / star_sector_size_02;
 
-    float radius = 1;
+    float radius = 2;
 
     renderStars(star_color, star_sector_size_02, sec_num_x, sec_num_y, radius);
 
@@ -35,7 +35,7 @@ void drawStars3()
     int sec_num_x = GetScreenWidth() / star_sector_size_03;
     int sec_num_y = GetScreenHeight() / star_sector_size_03;
 
-    float radius = frand.randInteger(0, 3);
+    float radius = frand.randInteger(2, 4);
 
     renderStars(star_color, star_sector_size_03, sec_num_x, sec_num_y, radius);
 }
