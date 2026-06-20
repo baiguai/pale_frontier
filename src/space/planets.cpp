@@ -56,8 +56,6 @@ namespace space_loop
             return;
         }
 
-        const Color planet_color_01 = Color{ 174, 187, 213, 255 };
-
         int sec_num_x = GetScreenWidth() / planet_sector_size;
         int sec_num_y = GetScreenHeight() / planet_sector_size;
 
@@ -84,6 +82,18 @@ namespace space_loop
                     float draw_y = (y - cam_y_frac) * planet_sector_size;
 
                     DrawTexture(planetTextures[texIndex], draw_x, draw_y, WHITE);
+
+                    float centerX = GetScreenWidth() / 2.0f;
+                    float centerY = GetScreenHeight() / 2.0f;
+                    float texW = planetTextures[texIndex].width;
+                    float texH = planetTextures[texIndex].height;
+                
+                    // Check if the center of the screen is within the planet's texture bounds
+                    if (draw_x <= centerX && centerX <= draw_x + texW &&
+                        draw_y <= centerY && centerY <= draw_y + texH)
+                    {
+                        std::cout << "Landed on the planet!!!\n";
+                    }
                 }
             }
         }

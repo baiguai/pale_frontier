@@ -2,9 +2,12 @@
 
 namespace space_loop
 {
+    float rotation { 0.0f };
+
     GameScreen runGameLoop()
     {
         loadPlanetTextures();
+        loadPlayerTexture();
 
         while (true)
         {
@@ -23,18 +26,22 @@ namespace space_loop
 
                 if (IsKeyDown(KEY_C))
                 {
+                    rotation = 180.0f;
                     space_camera.y += moveAmount;
                 }
                 if (IsKeyDown(KEY_E))
                 {
+                    rotation = 0.0f;
                     space_camera.y -= moveAmount;
                 }
                 if (IsKeyDown(KEY_S))
                 {
+                    rotation = 270.0f;
                     space_camera.x -= moveAmount;
                 }
                 if (IsKeyDown(KEY_F))
                 {
+                    rotation = 90.0f;
                     space_camera.x += moveAmount;
                 }
 
@@ -42,6 +49,7 @@ namespace space_loop
         }
 
         unloadPlanetTextures();
+        unloadPlayerTexture();
 
         return GameScreen::SPACE;
     }
@@ -50,5 +58,6 @@ namespace space_loop
     {
         drawStars();
         drawPlanets();
+        drawPlayer(rotation);
     }
 }

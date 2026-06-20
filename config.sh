@@ -9,6 +9,7 @@ SOURCES=(
     "src/space/spaceloop.cpp"
     "src/space/planets.cpp"
     "src/space/stars.cpp"
+    "src/space/player.cpp"
     "src/fastrand.cpp"
 )
 
@@ -24,6 +25,7 @@ HEADERS=(
     "src/space/spaceloop.hpp"
     "src/space/planets.hpp"
     "src/space/stars.hpp"
+    "src/space/player.hpp"
     "src/fastrand.hpp"
     "libs/raylib/raylib.h"
     "libs/nlohmann/json.hpp"
