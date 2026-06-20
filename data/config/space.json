@@ -1,4 +1,10 @@
 {
+  "game": {
+    "location": {
+      "x": 106,
+      "y": -6150
+    }
+  },
   "planets": {
     "distance": 64000
   },

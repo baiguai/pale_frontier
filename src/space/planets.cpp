@@ -11,7 +11,7 @@ namespace space_loop
     void loadPlanetTextures()
     {
         planetTextures.clear();
-        std::string dir = "data/space/assets/";
+        std::string dir = "data/space/assets/planets/";
         if (!fs::exists(dir))
         {
             std::cout << "ERROR:: Assets DIR does not exist.\n";
@@ -24,7 +24,7 @@ namespace space_loop
             if (entry.is_regular_file())
             {
                 auto path = entry.path().string();
-                if (path.find("planet_") && path.ends_with(".png"))
+                if (path.ends_with(".png"))
                 {
                     files.push_back(path);
                 }
