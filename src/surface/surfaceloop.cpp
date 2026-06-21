@@ -107,8 +107,8 @@ namespace surface_loop
 
     void drawSurface()
     {
-        drawPlayer(rotation);
         generateSurface();
+        drawPlayer(rotation);
     }
 
     void generateSurface()
