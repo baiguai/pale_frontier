@@ -78,6 +78,17 @@ namespace surface_loop
         int cam_y_int = static_cast<int>(floor(surface_camera.y));
         int sec_num_x = GetScreenWidth()  / surface_sector_size + 1;
         int sec_num_y = GetScreenHeight() / surface_sector_size + 1;
+        double height { 0.0 };
+        double tmp_ht { 0.0 };
+        double ht_left { 0.0 };
+        double ht_above { 0.0 };
+
+        // Initial Height
+        uint64_t planetSeed = Frand::PerfectHash(
+            (static_cast<int>(floor(current_planet.x)) << 16) ^ static_cast<int>(floor(surface_camera.x)),
+            (static_cast<int>(floor(current_planet.y)) << 16) ^ static_cast<int>(floor(surface_camera.y))
+        );
+        height = frand.randDouble(0.0, 1.0);
 
         for (int x = 0; x < sec_num_x; x++)
         {
@@ -88,7 +99,9 @@ namespace surface_loop
                     (static_cast<int>(floor(current_planet.y)) << 16) | (cam_y_int + y)
                 );
 
-                double height = frand.randDouble(0.0, 1.0);
+                tmp_ht = frand.randDouble(0.0, 1.0);
+                height = tmp_ht;
+
                 Color color = heightToColor(height);
 
                 DrawRectangle(
@@ -98,7 +111,11 @@ namespace surface_loop
                     surface_sector_size,
                     color
                 );
+
+                ht_left = height;
             }
+
+            ht_above = height;
         }
     }
 }
