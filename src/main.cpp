@@ -1,5 +1,28 @@
 #include "main.hpp"
 
+//// NOTES /////////////////////////////////////////////////////////////////////
+//
+// __| Procedural Notes |__
+//
+// * Build everything off of the Frand.
+// * Each screen needs its own global variables, such as camera, speed, etc.
+// * Those are all stored in the config.
+// * To do so - consistently seed it and do random things off of that:
+//      int cam_x_int = static_cast<int>(floor(space_camera.x));
+//      int cam_y_int = static_cast<int>(floor(space_camera.y));
+//      Point global_sector { cam_x_int + x, cam_y_int + y };
+//      frand.seed = Frand::PerfectHash(global_sector.x, global_sector.y);
+//
+//  * Planet texture indexes must be tied to the surface seed.
+//
+//
+//
+//
+//
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+
 int main(void)
 {
     SetConfigFlags(FLAG_FULLSCREEN_MODE);
@@ -9,22 +32,10 @@ int main(void)
 
     bool running {true };
 
-    createDirectories("data/player");
-    createDirectories("data/config");
+    createConfigDirectories();
 
+    loadVarsFromConfig();
 
-    // ---- Move to a config load/save maybe -----------------------------------
-
-    planet_distance = readJsonValue("data/config/space.json", "planets.distance", 25000);
-    star_distance_01 = readJsonValue("data/config/space.json", "stars.lvl1.distance", 9000);
-    star_distance_02 = readJsonValue("data/config/space.json", "stars.lvl2.distance", 3000);
-    star_distance_03 = readJsonValue("data/config/space.json", "stars.lvl3.distance", 18000);
-
-    // Restore the player's position
-    camera.x = readJsonValue("data/player/stats.json", "game.location.x", 0);
-    camera.y = readJsonValue("data/player/stats.json", "game.location.y", 0);
-
-    // -------------------------------------------------------------------------
 
     while (running)
     {
@@ -34,63 +45,25 @@ int main(void)
             break;
         }
 
-        BeginDrawing();
+        switch (currentScreen)
+        {
+            case GameScreen::SPACE:
+                currentScreen = space_loop::runGameLoop();
+                break;
+        }
 
-            ClearBackground(BLACK);
-
-// ---- Move this into the Playing Game UI Loop --------------------------------
-
-
-            // DRAW METHODS
-            drawSpace();
-
-
-            float moveAmount = speed * 60.0f * GetFrameTime();
-
-            if (IsKeyDown(KEY_C))
-            {
-                camera.y += moveAmount;
-            }
-            if (IsKeyDown(KEY_E))
-            {
-                camera.y -= moveAmount;
-            }
-            if (IsKeyDown(KEY_S))
-            {
-                camera.x -= moveAmount;
-            }
-            if (IsKeyDown(KEY_F))
-            {
-                camera.x += moveAmount;
-            }
-
-
-// -----------------------------------------------------------------------------
-
-        EndDrawing();
+        if (currentScreen == GameScreen::QUIT)
+        {
+            running = false;
+            break;
+        }
     }
 
 
-    // ---- Move to a config load/save maybe -----------------------------------
-
-    saveJsonValue("data/config/space.json", "planets.distance", planet_distance);
-    saveJsonValue("data/config/space.json", "stars.lvl1.distance", star_distance_01);
-    saveJsonValue("data/config/space.json", "stars.lvl2.distance", star_distance_02);
-    saveJsonValue("data/config/space.json", "stars.lvl3.distance", star_distance_03);
-
-    // Store the player's position
-    saveJsonValue("data/player/stats.json", "game.location.x", static_cast<int>(floor(camera.x)));
-    saveJsonValue("data/player/stats.json", "game.location.y", static_cast<int>(floor(camera.y)));
-
-    // -------------------------------------------------------------------------
+    saveVarsFromConfig();
 
 
     CloseWindow();
     return 0;
 }
 
-void drawSpace()
-{
-    drawStars();
-    drawPlanets();
-}

@@ -6,8 +6,10 @@ APP_NAME="pale_frontier"
 
 SOURCES=(
     "src/main.cpp"
-    "src/planets.cpp"
-    "src/stars.cpp"
+    "src/space/spaceloop.cpp"
+    "src/space/planets.cpp"
+    "src/space/stars.cpp"
+    "src/space/player.cpp"
     "src/fastrand.cpp"
 )
 
@@ -20,8 +22,10 @@ HEADERS=(
     "src/fileio.hpp"
     "src/global.hpp"
     "src/main.hpp"
-    "src/planets.hpp"
-    "src/stars.hpp"
+    "src/space/spaceloop.hpp"
+    "src/space/planets.hpp"
+    "src/space/stars.hpp"
+    "src/space/player.hpp"
     "src/fastrand.hpp"
     "libs/raylib/raylib.h"
     "libs/nlohmann/json.hpp"
