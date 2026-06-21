@@ -38,20 +38,20 @@ namespace surface_loop
         return dx * cos(angle) + dy * sin(angle);
     }
 
-    static double perlinOctave(int worldX, int worldY, int gridSize, double amplitude, uint64_t seed)
+    static double perlinOctave(double worldX, double worldY, int gridSize, double amplitude, uint64_t seed)
     {
-        int gx = (worldX / gridSize) * gridSize;
-        int gy = (worldY / gridSize) * gridSize;
-        double tx = smoothstep((double)(worldX - gx) / gridSize);
-        double ty = smoothstep((double)(worldY - gy) / gridSize);
-        double dx = (double)(worldX - gx) / gridSize;
-        double dy = (double)(worldY - gy) / gridSize;
-
-        double v00 = perlinGrid(gx,           gy,           dx,       dy,       seed);
-        double v10 = perlinGrid(gx + gridSize, gy,           dx - 1.0, dy,       seed);
-        double v01 = perlinGrid(gx,           gy + gridSize, dx,       dy - 1.0, seed);
-        double v11 = perlinGrid(gx + gridSize, gy + gridSize, dx - 1.0, dy - 1.0, seed);
-
+        double gx = floor(worldX / gridSize) * gridSize;
+        double gy = floor(worldY / gridSize) * gridSize;
+        double dx = (worldX - gx) / gridSize;
+        double dy = (worldY - gy) / gridSize;
+        double tx = smoothstep(dx);
+        double ty = smoothstep(dy);
+    
+        double v00 = perlinGrid((int)gx,              (int)gy,              dx,     dy,     seed);
+        double v10 = perlinGrid((int)gx + gridSize,   (int)gy,              dx-1.0, dy,     seed);
+        double v01 = perlinGrid((int)gx,              (int)gy + gridSize,   dx,     dy-1.0, seed);
+        double v11 = perlinGrid((int)gx + gridSize,   (int)gy + gridSize,   dx-1.0, dy-1.0, seed);
+    
         return lerp(lerp(v00, v10, tx), lerp(v01, v11, tx), ty) * amplitude;
     }
 
@@ -127,8 +127,8 @@ namespace surface_loop
         {
             for (int y = 0; y < sec_num_y; y++)
             {
-                int worldX = (cam_x_int + x) * surface_sector_size;
-                int worldY = (cam_y_int + y) * surface_sector_size;
+                double worldX = (cam_x_int + x) * surface_sector_size * surface_zoom;
+                double worldY = (cam_y_int + y) * surface_sector_size * surface_zoom;
 
                 double h0 = perlinOctave(worldX, worldY, 512, 0.6, planetSeed);
                 double h1 = perlinOctave(worldX, worldY, 128, 0.3, planetSeed);
