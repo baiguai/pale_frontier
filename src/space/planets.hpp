@@ -8,7 +8,7 @@ namespace space_loop
 {
     void loadPlanetTextures();
     void unloadPlanetTextures();
-    void drawPlanets();
+    GameScreen drawPlanets();
 }
 
 #endif

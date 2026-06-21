@@ -7,7 +7,9 @@ namespace space_loop
     GameScreen runGameLoop()
     {
         loadPlanetTextures();
+        loadStarTextures();
         loadPlayerTexture();
+        GameScreen next_screen { GameScreen::SPACE };
 
         while (true)
         {
@@ -20,7 +22,7 @@ namespace space_loop
 
                 ClearBackground(BLACK);
 
-                drawSpace();
+                next_screen = drawSpace();
 
                 float moveAmount = space_speed * 60.0f * GetFrameTime();
 
@@ -49,15 +51,20 @@ namespace space_loop
         }
 
         unloadPlanetTextures();
+        unloadStarTextures();
         unloadPlayerTexture();
 
         return GameScreen::SPACE;
     }
 
-    void drawSpace()
+    GameScreen drawSpace()
     {
+        GameScreen next_scr { GameScreen::SPACE };
+
         drawStars();
-        drawPlanets();
+        next_scr = drawPlanets();
         drawPlayer(rotation);
+
+        return next_scr;
     }
 }

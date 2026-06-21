@@ -48,12 +48,12 @@ namespace space_loop
         planetTextures.clear();
     }
 
-    void drawPlanets()
+    GameScreen drawPlanets()
     {
         if (planetTextures.empty())
         {
             std::cout << "ERROR:: Planet textures are empty.\n";
-            return;
+            return GameScreen::SPACE;
         }
 
         int sec_num_x = GetScreenWidth() / planet_sector_size;
@@ -97,5 +97,7 @@ namespace space_loop
                 }
             }
         }
+
+        return GameScreen::SPACE;
     }
 }

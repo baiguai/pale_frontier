@@ -12,7 +12,7 @@ enum class GameScreen
     START_MENU,
     OPTIONS,
     SPACE,
-    PLANET,
+    SURFACE,
     BASE,
     QUIT
 };
@@ -30,6 +30,8 @@ inline GameScreen currentScreen { GameScreen::SPACE };
 #include "space/planets.hpp"
 #include "space/stars.hpp"
 #include "space/player.hpp"
+#include "surface/surfaceloop.hpp"
+#include "surface/player.hpp"
 
 void drawSpace();
 

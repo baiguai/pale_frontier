@@ -3,13 +3,13 @@
 #include <vector>
 namespace fs = std::filesystem;
 
-namespace space_loop
+namespace surface_loop
 {
     Texture2D playerTexture;
 
     void loadPlayerTexture()
     {
-        std::string img = "data/space/assets/player.png";
+        std::string img = "data/surface/assets/player.png";
         if (!fs::exists(img))
         {
             std::cout << "ERROR:: The player image does not exist.\n";

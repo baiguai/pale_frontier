@@ -50,6 +50,10 @@ int main(void)
             case GameScreen::SPACE:
                 currentScreen = space_loop::runGameLoop();
                 break;
+
+            case GameScreen::SURFACE:
+                currentScreen = surface_loop::runGameLoop();
+                break;
         }
 
         if (currentScreen == GameScreen::QUIT)

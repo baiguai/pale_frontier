@@ -1,10 +1,10 @@
-#ifndef PLAYER_SPACE_H
-#define PLAYER_SPACE_H
+#ifndef PLAYER_SURFACE_H
+#define PLAYER_SURFACE_H
 
 #include "../global.hpp"
 #include <cmath>
 
-namespace space_loop
+namespace surface_loop
 {
     void loadPlayerTexture();
     void unloadPlayerTexture();
