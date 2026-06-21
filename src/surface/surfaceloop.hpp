@@ -5,6 +5,7 @@ namespace surface_loop
 {
     GameScreen runGameLoop();
     void drawSurface();
+    void generateSurface();
 }
 
 #endif

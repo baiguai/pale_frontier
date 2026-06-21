@@ -17,7 +17,7 @@ namespace surface_loop
 
             BeginDrawing();
 
-                ClearBackground(BLACK);
+                ClearBackground(GREEN);
 
                 drawSurface();
 
@@ -55,5 +55,11 @@ namespace surface_loop
     void drawSurface()
     {
         drawPlayer(rotation);
+        generateSurface();
+    }
+
+    void generateSurface()
+    {
+
     }
 }
