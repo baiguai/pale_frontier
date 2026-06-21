@@ -4,6 +4,20 @@ namespace surface_loop
 {
     float rotation { 0.0f };
 
+    static Color heightToColor(double height)
+    {
+        if (height < 0.35) return Color{ 10,  10,  60,  255 }; // deep water
+        if (height < 0.42) return Color{ 30,  60,  130, 255 }; // water
+        if (height < 0.50) return Color{ 210, 190, 140, 255 }; // shore
+        if (height < 0.58) return Color{ 140, 170, 110, 255 }; // marsh
+        if (height < 0.65) return Color{ 50,  140, 50,  255 }; // forest
+        if (height < 0.72) return Color{ 80,  170, 60,  255 }; // grassland
+        if (height < 0.80) return Color{ 90,  90,  90,  255 }; // rocky
+        if (height < 0.88) return Color{ 140, 140, 140, 255 }; // mountain foot
+        if (height < 0.95) return Color{ 190, 190, 190, 255 }; // high mountain
+        return                     Color{ 240, 240, 240, 255 }; // peaks
+    }
+
     GameScreen runGameLoop()
     {
         loadPlayerTexture();
@@ -60,6 +74,31 @@ namespace surface_loop
 
     void generateSurface()
     {
+        int cam_x_int = static_cast<int>(floor(surface_camera.x));
+        int cam_y_int = static_cast<int>(floor(surface_camera.y));
+        int sec_num_x = GetScreenWidth()  / surface_sector_size + 1;
+        int sec_num_y = GetScreenHeight() / surface_sector_size + 1;
 
+        for (int x = 0; x < sec_num_x; x++)
+        {
+            for (int y = 0; y < sec_num_y; y++)
+            {
+                frand.seed = Frand::PerfectHash(
+                    (static_cast<int>(floor(current_planet.x)) << 16) | (cam_x_int + x),
+                    (static_cast<int>(floor(current_planet.y)) << 16) | (cam_y_int + y)
+                );
+
+                double height = frand.randDouble(0.0, 1.0);
+                Color color = heightToColor(height);
+
+                DrawRectangle(
+                    x * surface_sector_size,
+                    y * surface_sector_size,
+                    surface_sector_size,
+                    surface_sector_size,
+                    color
+                );
+            }
+        }
     }
 }
