@@ -39,6 +39,8 @@ int main(void)
 
     while (running)
     {
+        std::cout << "Screen: " << static_cast<int>(currentScreen) << std::endl;
+
         if (IsKeyPressed(KEY_Q))
         {
             running = false;

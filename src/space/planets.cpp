@@ -92,7 +92,9 @@ namespace space_loop
                     if (draw_x <= centerX && centerX <= draw_x + texW &&
                         draw_y <= centerY && centerY <= draw_y + texH)
                     {
-                        std::cout << "Landed on the planet!!!\n";
+                        // std::cout << "Landed on the planet!!!\n";
+                        space_camera.x = space_camera.x - planet_sector_size;
+                        return GameScreen::SURFACE;
                     }
                 }
             }

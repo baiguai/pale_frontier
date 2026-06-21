@@ -24,6 +24,11 @@ namespace space_loop
 
                 next_screen = drawSpace();
 
+                if (next_screen != GameScreen::SPACE)
+                {
+                    return next_screen;
+                }
+
                 float moveAmount = space_speed * 60.0f * GetFrameTime();
 
                 if (IsKeyDown(KEY_C))
