@@ -36,4 +36,10 @@ inline void saveVarsFromConfig()
     saveJsonValue("data/config/surface.json", "game.location.y", static_cast<int>(floor(surface_camera.y)));
 }
 
+inline void setCurrentPlanet()
+{
+    saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
+    saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
+}
+
 #endif

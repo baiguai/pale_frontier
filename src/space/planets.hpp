@@ -9,6 +9,7 @@ namespace space_loop
     void loadPlanetTextures();
     void unloadPlanetTextures();
     GameScreen drawPlanets();
+    void configurePlanet(int sector_x, int sector_y);
 }
 
 #endif
