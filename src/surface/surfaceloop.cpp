@@ -74,9 +74,32 @@ namespace surface_loop
 
     void generateSurface()
     {
-        uint64_t planetSeed = Frand::PerfectHash(
+        frand.seed = Frand::PerfectHash(
             (static_cast<int>(floor(current_planet.x)) << 16) ^ static_cast<int>(floor(surface_camera.x)),
             (static_cast<int>(floor(current_planet.y)) << 16) ^ static_cast<int>(floor(surface_camera.y))
         );
+
+        int sec_num_x = GetScreenWidth()  / surface_sector_size + 1;
+        int sec_num_y = GetScreenHeight() / surface_sector_size + 1;
+
+        for (int x = 0; x < sec_num_x; x++)
+        {
+            for (int y = 0; y < sec_num_y; y++)
+            {
+                double height = frand.randDouble(0.0, 1.0);
+                if (height < 0.0) height = 0.0;
+                if (height > 1.0) height = 1.0;
+
+                Color color = heightToColor(height);
+
+                DrawRectangle(
+                    x * surface_sector_size,
+                    y * surface_sector_size,
+                    surface_sector_size,
+                    surface_sector_size,
+                    color
+                );
+            }
+        }
     }
 }
