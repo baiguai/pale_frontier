@@ -18,6 +18,45 @@ namespace surface_loop
         return                     Color{ 240, 240, 240, 255 }; // peaks
     }
 
+
+
+
+    static double smoothstep(double t)
+    {
+        return t * t * (3.0 - 2.0 * t);
+    }
+
+    static double lerp(double a, double b, double t)
+    {
+        return a + (b - a) * t;
+    }
+
+    static double perlinGrid(int gx, int gy, double dx, double dy, uint64_t seed)
+    {
+        frand.seed = Frand::PerfectHash(gx, gy) ^ seed;
+        double angle = frand.randDouble(0.0, PI * 2.0);
+        return dx * cos(angle) + dy * sin(angle);
+    }
+
+    static double perlinOctave(int worldX, int worldY, int gridSize, double amplitude, uint64_t seed)
+    {
+        int gx = (worldX / gridSize) * gridSize;
+        int gy = (worldY / gridSize) * gridSize;
+        double tx = smoothstep((double)(worldX - gx) / gridSize);
+        double ty = smoothstep((double)(worldY - gy) / gridSize);
+        double dx = (double)(worldX - gx) / gridSize;
+        double dy = (double)(worldY - gy) / gridSize;
+
+        double v00 = perlinGrid(gx,           gy,           dx,       dy,       seed);
+        double v10 = perlinGrid(gx + gridSize, gy,           dx - 1.0, dy,       seed);
+        double v01 = perlinGrid(gx,           gy + gridSize, dx,       dy - 1.0, seed);
+        double v11 = perlinGrid(gx + gridSize, gy + gridSize, dx - 1.0, dy - 1.0, seed);
+
+        return lerp(lerp(v00, v10, tx), lerp(v01, v11, tx), ty) * amplitude;
+    }
+
+
+
     GameScreen runGameLoop()
     {
         loadPlayerTexture();
@@ -74,11 +113,13 @@ namespace surface_loop
 
     void generateSurface()
     {
-        frand.seed = Frand::PerfectHash(
-            (static_cast<int>(floor(current_planet.x)) << 16) ^ static_cast<int>(floor(surface_camera.x)),
-            (static_cast<int>(floor(current_planet.y)) << 16) ^ static_cast<int>(floor(surface_camera.y))
+        uint64_t planetSeed = Frand::PerfectHash(
+            static_cast<int>(floor(current_planet.x)),
+            static_cast<int>(floor(current_planet.y))
         );
 
+        int cam_x_int = static_cast<int>(floor(surface_camera.x));
+        int cam_y_int = static_cast<int>(floor(surface_camera.y));
         int sec_num_x = GetScreenWidth()  / surface_sector_size + 1;
         int sec_num_y = GetScreenHeight() / surface_sector_size + 1;
 
@@ -86,7 +127,14 @@ namespace surface_loop
         {
             for (int y = 0; y < sec_num_y; y++)
             {
-                double height = frand.randDouble(0.0, 1.0);
+                int worldX = (cam_x_int + x) * surface_sector_size;
+                int worldY = (cam_y_int + y) * surface_sector_size;
+
+                double h0 = perlinOctave(worldX, worldY, 512, 0.6, planetSeed);
+                double h1 = perlinOctave(worldX, worldY, 128, 0.3, planetSeed);
+                double h2 = perlinOctave(worldX, worldY, 32,  0.1, planetSeed);
+
+                double height = (h0 + h1 + h2 + 0.5) / 1.5;
                 if (height < 0.0) height = 0.0;
                 if (height > 1.0) height = 1.0;
 

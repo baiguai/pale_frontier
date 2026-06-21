@@ -25,7 +25,7 @@
 
 int main(void)
 {
-    SetConfigFlags(FLAG_FULLSCREEN_MODE);
+    // SetConfigFlags(FLAG_FULLSCREEN_MODE);
     InitWindow(window_width, window_height, title);
     SetTargetFPS(60);
     HideCursor();
