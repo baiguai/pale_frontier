@@ -4,18 +4,28 @@ namespace surface_loop
 {
     float rotation { 0.0f };
 
+    inline double elevation_deep_water    { 0.15 };
+    inline double elevation_water         { 0.22 };
+    inline double elevation_shore         { 0.50 };
+    inline double elevation_marsh         { 0.58 };
+    inline double elevation_forest        { 0.65 };
+    inline double elevation_grassland     { 0.72 };
+    inline double elevation_rocky         { 0.80 };
+    inline double elevation_mountain_foot { 0.88 };
+    inline double elevation_high_mountain { 0.95 };
+
     static Color heightToColor(double height)
     {
-        if (height < 0.35) return Color{ 10,  10,  60,  255 }; // deep water
-        if (height < 0.42) return Color{ 30,  60,  130, 255 }; // water
-        if (height < 0.50) return Color{ 210, 190, 140, 255 }; // shore
-        if (height < 0.58) return Color{ 140, 170, 110, 255 }; // marsh
-        if (height < 0.65) return Color{ 50,  140, 50,  255 }; // forest
-        if (height < 0.72) return Color{ 80,  170, 60,  255 }; // grassland
-        if (height < 0.80) return Color{ 90,  90,  90,  255 }; // rocky
-        if (height < 0.88) return Color{ 140, 140, 140, 255 }; // mountain foot
-        if (height < 0.95) return Color{ 190, 190, 190, 255 }; // high mountain
-        return                     Color{ 240, 240, 240, 255 }; // peaks
+        if (height < elevation_deep_water   ) return Color{ 10,  10,  60,  255 };
+        if (height < elevation_water        ) return Color{ 30,  60,  130, 255 };
+        if (height < elevation_shore        ) return Color{ 210, 190, 140, 255 };
+        if (height < elevation_marsh        ) return Color{ 140, 170, 110, 255 };
+        if (height < elevation_forest       ) return Color{ 50,  140, 50,  255 };
+        if (height < elevation_grassland    ) return Color{ 80,  170, 60,  255 };
+        if (height < elevation_rocky        ) return Color{ 90,  90,  90,  255 };
+        if (height < elevation_mountain_foot) return Color{ 140, 140, 140, 255 };
+        if (height < elevation_high_mountain) return Color{ 190, 190, 190, 255 };
+        return                                Color{ 240, 240, 240, 255 };
     }
 
 
