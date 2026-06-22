@@ -10,6 +10,16 @@ inline void createConfigDirectories()
 
 inline void loadVarsFromConfig()
 {
+    std::string_view t { "SPACE" };
+    std::string_view scr = readJsonValue("data/config/game.json", "game.screen", t);
+
+    if (scr == "SPACE")
+        currentScreen = GameScreen::SPACE;
+    else if (scr == "SURFACE")
+        currentScreen = GameScreen::SURFACE;
+    else
+        currentScreen = GameScreen::SPACE; // Later this may be the menu or similar.
+
     planet_distance = readJsonValue("data/config/space.json", "planets.distance", 64000);
     star_distance_01 = readJsonValue("data/config/space.json", "stars.lvl1.distance", 9000);
     star_distance_02 = readJsonValue("data/config/space.json", "stars.lvl2.distance", 3000);
@@ -36,10 +46,29 @@ inline void saveVarsFromConfig()
     saveJsonValue("data/config/surface.json", "game.location.y", static_cast<int>(floor(surface_camera.y)));
 }
 
-inline void setCurrentPlanet()
+inline void setCurrentPlanet(const std::string& file_loc)
 {
     saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
     saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
+    saveJsonValue(file_loc, "planet.x", current_planet.x);
+    saveJsonValue(file_loc, "planet.y", current_planet.y);
+    std::cout << "planet config: " << file_loc << "\n";
+}
+
+inline void setCurrentScreen(GameScreen scr)
+{
+    switch (scr)
+    {
+        case GameScreen::SPACE:
+            saveJsonValue("data/config/game.json", "game.screen", "SPACE");
+            break;
+        case GameScreen::SURFACE:
+            saveJsonValue("data/config/game.json", "game.screen", "SURFACE");
+            break;
+        default:
+            saveJsonValue("data/config/game.json", "game.screen", "SPACE"); // Later this may be the menu or similar.
+            break;
+    }
 }
 
 #endif

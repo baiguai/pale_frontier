@@ -1,4 +1,7 @@
 {
+  "game": {
+    "screen": "SURFACE"
+  },
   "startup": {
     "planet": {
       "x": 163.0,

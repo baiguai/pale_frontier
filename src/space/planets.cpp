@@ -112,7 +112,7 @@ namespace space_loop
         std::string config_path { "data/space/planets/planet_" + std::to_string(sector_x) + "_" + std::to_string(sector_y) + ".json" };
         current_planet.x = sector_x;
         current_planet.y = sector_y;
-        setCurrentPlanet();
+        setCurrentPlanet(config_path);
     }
 
     //--------------------------------------------------------------------------

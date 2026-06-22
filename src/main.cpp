@@ -50,10 +50,12 @@ int main(void)
         switch (currentScreen)
         {
             case GameScreen::SPACE:
+                setCurrentScreen(currentScreen);
                 currentScreen = space_loop::runGameLoop();
                 break;
 
             case GameScreen::SURFACE:
+                setCurrentScreen(currentScreen);
                 currentScreen = surface_loop::runGameLoop();
                 break;
         }
