@@ -1,11 +1,42 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#include <stdlib.h>
+#include <time.h>
+
+inline int generalRand(int max)
+{
+    return rand() % max + 1;
+}
+
+
+
 inline void createConfigDirectories()
 {
     createDirectories("data/player");
     createDirectories("data/config");
     createDirectories("data/space/planets");
+}
+
+inline const std::string getPlanetPath(int sector_x, int sector_y)
+{
+    return "data/space/planets/planet_" + std::to_string(sector_x) + "_" + std::to_string(sector_y) + ".json";
+}
+
+inline void getCurrentPlanet()
+{
+    current_planet.x = readJsonValue("data/config/game.json", "startup.planet.x", 0);
+    current_planet.y = readJsonValue("data/config/game.json", "startup.planet.y", 0);
+}
+
+inline void setCurrentPlanet(int sector_x, int sector_y)
+{
+    const std::string file_loc = getPlanetPath(sector_x, sector_y);
+    saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
+    saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
+    saveJsonValue(file_loc, "planet.x", current_planet.x);
+    saveJsonValue(file_loc, "planet.y", current_planet.y);
+    std::cout << "planet config: " << file_loc << "\n";
 }
 
 inline void loadVarsFromConfig()
@@ -25,9 +56,14 @@ inline void loadVarsFromConfig()
     star_distance_02 = readJsonValue("data/config/space.json", "stars.lvl2.distance", 3000);
     star_distance_03 = readJsonValue("data/config/space.json", "stars.lvl3.distance", 18000);
 
+    // Restore the current planet
+    getCurrentPlanet();
+
     // Restore the player's position
-    space_camera.x = readJsonValue("data/config/space.json", "game.location.x", 0);
-    space_camera.y = readJsonValue("data/config/space.json", "game.location.y", 0);
+    int max_dist = generalRand(25000);
+    space_camera.x = readJsonValue("data/config/space.json", "game.location.x", max_dist);
+    max_dist = generalRand(22000);
+    space_camera.y = readJsonValue("data/config/space.json", "game.location.y", max_dist);
     surface_camera.x = readJsonValue("data/config/surface.json", "game.location.x", 0);
     surface_camera.y = readJsonValue("data/config/surface.json", "game.location.y", 0);
 }
@@ -44,15 +80,6 @@ inline void saveVarsFromConfig()
     saveJsonValue("data/config/space.json", "game.location.y", static_cast<int>(floor(space_camera.y)));
     saveJsonValue("data/config/surface.json", "game.location.x", static_cast<int>(floor(surface_camera.x)));
     saveJsonValue("data/config/surface.json", "game.location.y", static_cast<int>(floor(surface_camera.y)));
-}
-
-inline void setCurrentPlanet(const std::string& file_loc)
-{
-    saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
-    saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
-    saveJsonValue(file_loc, "planet.x", current_planet.x);
-    saveJsonValue(file_loc, "planet.y", current_planet.y);
-    std::cout << "planet config: " << file_loc << "\n";
 }
 
 inline void setCurrentScreen(GameScreen scr)

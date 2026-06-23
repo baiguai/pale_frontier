@@ -65,11 +65,63 @@ namespace surface_loop
         return lerp(lerp(v00, v10, tx), lerp(v01, v11, tx), ty) * amplitude;
     }
 
+    static double sampleHeight(double worldX, double worldY, uint64_t seed)
+    {
+        double h0 = perlinOctave(worldX, worldY, 512, 0.6, seed);
+        double h1 = perlinOctave(worldX, worldY, 128, 0.3, seed);
+        double h2 = perlinOctave(worldX, worldY, 32,  0.1, seed);
+        double h = (h0 + h1 + h2 + 0.5) / 1.5;
+        if (h < 0.0) h = 0.0;
+        if (h > 1.0) h = 1.0;
+        return h;
+    }
+
+    static Vector2 findLandSpawn(uint64_t seed, int maxRange)
+    {
+        for (int r = 0; r <= maxRange; r++) {
+            for (int x = -r; x <= r; x++) {
+                double wx = x * surface_sector_size * surface_zoom;
+                double wy = -r * surface_sector_size * surface_zoom;
+                if (sampleHeight(wx, wy, seed) >= 0.50)
+                    return Vector2{ (float)x, (float)(-r) };
+            }
+            for (int x = -r; x <= r; x++) {
+                double wx = x * surface_sector_size * surface_zoom;
+                double wy = r * surface_sector_size * surface_zoom;
+                if (sampleHeight(wx, wy, seed) >= 0.50)
+                    return Vector2{ (float)x, (float)r };
+            }
+            for (int y = -r + 1; y < r; y++) {
+                double wx = -r * surface_sector_size * surface_zoom;
+                double wy = y * surface_sector_size * surface_zoom;
+                if (sampleHeight(wx, wy, seed) >= 0.50)
+                    return Vector2{ (float)(-r), (float)y };
+            }
+            for (int y = -r + 1; y < r; y++) {
+                double wx = r * surface_sector_size * surface_zoom;
+                double wy = y * surface_sector_size * surface_zoom;
+                if (sampleHeight(wx, wy, seed) >= 0.50)
+                    return Vector2{ (float)r, (float)y };
+            }
+        }
+        return Vector2{ 0, 0 }; // fallback — should never reach
+    }
+
+
 
 
     GameScreen runGameLoop()
     {
         loadPlayerTexture();
+        int p_x = static_cast<int>(floor(current_planet.x));
+        int p_y = static_cast<int>(floor(current_planet.y));
+
+        uint64_t planetSeed = Frand::PerfectHash(p_x, p_y);
+
+        bool config_exists = fileExists(getPlanetPath(p_x, p_y));
+        if (!config_exists) {
+            surface_camera = findLandSpawn(planetSeed, 200);
+        }
 
         while (true)
         {
@@ -123,10 +175,9 @@ namespace surface_loop
 
     void generateSurface()
     {
-        uint64_t planetSeed = Frand::PerfectHash(
-            static_cast<int>(floor(current_planet.x)),
-            static_cast<int>(floor(current_planet.y))
-        );
+        int cur_p_x = static_cast<int>(floor(current_planet.x));
+        int cur_p_y = static_cast<int>(floor(current_planet.y));
+        uint64_t planetSeed = Frand::PerfectHash(cur_p_x, cur_p_y);
 
         int cam_x_int = static_cast<int>(floor(surface_camera.x));
         int cam_y_int = static_cast<int>(floor(surface_camera.y));
@@ -140,11 +191,8 @@ namespace surface_loop
                 double worldX = (cam_x_int + x) * surface_sector_size * surface_zoom;
                 double worldY = (cam_y_int + y) * surface_sector_size * surface_zoom;
 
-                double h0 = perlinOctave(worldX, worldY, 512, 0.6, planetSeed);
-                double h1 = perlinOctave(worldX, worldY, 128, 0.3, planetSeed);
-                double h2 = perlinOctave(worldX, worldY, 32,  0.1, planetSeed);
+                double height = sampleHeight(worldX, worldY, planetSeed);
 
-                double height = (h0 + h1 + h2 + 0.5) / 1.5;
                 if (height < 0.0) height = 0.0;
                 if (height > 1.0) height = 1.0;
 
