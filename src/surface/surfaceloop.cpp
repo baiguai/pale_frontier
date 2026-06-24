@@ -8,7 +8,7 @@ namespace surface_loop
 
     inline double elevation_deep_water    { 0.15 };
     inline double elevation_water         { 0.22 };
-    inline double elevation_walkable      { 0.23 };
+    inline double elevation_walkable      { 0.221 };
     inline double elevation_shore         { 0.50 };
     inline double elevation_marsh         { 0.58 };
     inline double elevation_forest        { 0.65 };
@@ -261,22 +261,22 @@ namespace surface_loop
                 old_pos.x = surface_camera.x;
                 old_pos.y = surface_camera.y;
 
-                if (IsKeyDown(KEY_C))
+                if (IsKeyDown(KEY_M) || IsKeyDown(KEY_DOWN))
                 {
                     rotation = 180.0f;
                     surface_camera.y += moveAmount;
                 }
-                if (IsKeyDown(KEY_E))
+                if (IsKeyDown(KEY_I) || IsKeyDown(KEY_UP))
                 {
                     rotation = 0.0f;
                     surface_camera.y -= moveAmount;
                 }
-                if (IsKeyDown(KEY_S))
+                if (IsKeyDown(KEY_J) || IsKeyDown(KEY_LEFT))
                 {
                     rotation = 270.0f;
                     surface_camera.x -= moveAmount;
                 }
-                if (IsKeyDown(KEY_F))
+                if (IsKeyDown(KEY_L) || IsKeyDown(KEY_RIGHT))
                 {
                     rotation = 90.0f;
                     surface_camera.x += moveAmount;

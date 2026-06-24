@@ -31,22 +31,22 @@ namespace space_loop
 
                 float moveAmount = space_speed * 60.0f * GetFrameTime();
 
-                if (IsKeyDown(KEY_C))
+                if (IsKeyDown(KEY_M) || IsKeyDown(KEY_DOWN))
                 {
                     rotation = 180.0f;
                     space_camera.y += moveAmount;
                 }
-                if (IsKeyDown(KEY_E))
+                if (IsKeyDown(KEY_I) || IsKeyDown(KEY_UP))
                 {
                     rotation = 0.0f;
                     space_camera.y -= moveAmount;
                 }
-                if (IsKeyDown(KEY_S))
+                if (IsKeyDown(KEY_J) || IsKeyDown(KEY_LEFT))
                 {
                     rotation = 270.0f;
                     space_camera.x -= moveAmount;
                 }
-                if (IsKeyDown(KEY_F))
+                if (IsKeyDown(KEY_L) || IsKeyDown(KEY_RIGHT))
                 {
                     rotation = 90.0f;
                     space_camera.x += moveAmount;
