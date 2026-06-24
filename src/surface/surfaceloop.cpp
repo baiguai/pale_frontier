@@ -1,4 +1,6 @@
 #include "../main.hpp"
+#include <filesystem>
+namespace fs = std::filesystem;
 
 namespace surface_loop
 {
@@ -14,6 +16,8 @@ namespace surface_loop
     inline double elevation_mountain_foot { 0.88 };
     inline double elevation_high_mountain { 0.95 };
 
+    static Vector2 old_pos = surface_camera;
+
     static Color heightToColor(double height)
     {
         if (height < elevation_deep_water   ) return Color{ 10,  10,  60,  255 };
@@ -28,6 +32,53 @@ namespace surface_loop
         return                                Color{ 240, 240, 240, 255 };
     }
 
+
+    struct Port {
+        int x;
+        int y;
+    };
+    inline std::vector<Port> surface_ports;
+    inline Texture2D portTexture;
+
+    void loadPortTexture()
+    {
+        std::string img = "data/surface/assets/port.png";
+        if (fs::exists(img))
+            portTexture = LoadTexture(img.c_str());
+    }
+
+    void unloadPortTexture()
+    {
+        UnloadTexture(portTexture);
+    }
+
+    static void savePorts(const std::string& path)
+    {
+        json j;
+        std::ifstream in(path);
+        if (in.good()) in >> j;
+
+        json arr = json::array();
+        for (const auto& p : surface_ports) {
+            json obj; obj["x"] = p.x; obj["y"] = p.y;
+            arr.push_back(obj);
+        }
+        j["ports"] = arr;
+
+        std::ofstream out(path);
+        if (out.good()) out << j.dump(2) << std::endl;
+    }
+
+    static void loadPorts(const std::string& path)
+    {
+        std::ifstream in(path);
+        if (!in.good()) return;
+        json j; in >> j;
+        if (!j.contains("ports")) return;
+
+        for (const auto& o : j["ports"])
+            surface_ports.push_back({ o["x"], o["y"] });
+    }
 
 
 
@@ -76,35 +127,71 @@ namespace surface_loop
         return h;
     }
 
-    static Vector2 findLandSpawn(uint64_t seed, int maxRange)
+    static Vector2 findLandSpawn(uint64_t seed, int maxRange, int centerX = 0, int centerY = 0)
     {
+        int halfTilesX = GetScreenWidth() / 2 / surface_sector_size;
+        int halfTilesY = GetScreenHeight() / 2 / surface_sector_size;
+
         for (int r = 0; r <= maxRange; r++) {
+            // Top edge: (x, centerY - r)
             for (int x = -r; x <= r; x++) {
-                double wx = x * surface_sector_size * surface_zoom;
-                double wy = -r * surface_sector_size * surface_zoom;
+                int psx = centerX + x;             // player sector X
+                int psy = centerY - r;             // player sector Y
+                double wx = psx * surface_sector_size * surface_zoom;
+                double wy = psy * surface_sector_size * surface_zoom;
                 if (sampleHeight(wx, wy, seed) >= 0.50)
-                    return Vector2{ (float)x, (float)(-r) };
+                    return Vector2{ (float)(psx - halfTilesX),
+                                    (float)(psy - halfTilesY) };
             }
+            // Bottom edge: (x, centerY + r)
             for (int x = -r; x <= r; x++) {
-                double wx = x * surface_sector_size * surface_zoom;
-                double wy = r * surface_sector_size * surface_zoom;
+                int psx = centerX + x;
+                int psy = centerY + r;
+                double wx = psx * surface_sector_size * surface_zoom;
+                double wy = psy * surface_sector_size * surface_zoom;
                 if (sampleHeight(wx, wy, seed) >= 0.50)
-                    return Vector2{ (float)x, (float)r };
+                    return Vector2{ (float)(psx - halfTilesX),
+                                    (float)(psy - halfTilesY) };
             }
+            // Left edge: (centerX - r, y)  — skip corners
             for (int y = -r + 1; y < r; y++) {
-                double wx = -r * surface_sector_size * surface_zoom;
-                double wy = y * surface_sector_size * surface_zoom;
+                int psx = centerX - r;
+                int psy = centerY + y;
+                double wx = psx * surface_sector_size * surface_zoom;
+                double wy = psy * surface_sector_size * surface_zoom;
                 if (sampleHeight(wx, wy, seed) >= 0.50)
-                    return Vector2{ (float)(-r), (float)y };
+                    return Vector2{ (float)(psx - halfTilesX),
+                                    (float)(psy - halfTilesY) };
             }
+            // Right edge: (centerX + r, y) — skip corners
             for (int y = -r + 1; y < r; y++) {
-                double wx = r * surface_sector_size * surface_zoom;
-                double wy = y * surface_sector_size * surface_zoom;
+                int psx = centerX + r;
+                int psy = centerY + y;
+                double wx = psx * surface_sector_size * surface_zoom;
+                double wy = psy * surface_sector_size * surface_zoom;
                 if (sampleHeight(wx, wy, seed) >= 0.50)
-                    return Vector2{ (float)r, (float)y };
+                    return Vector2{ (float)(psx - halfTilesX),
+                                    (float)(psy - halfTilesY) };
             }
         }
-        return Vector2{ 0, 0 }; // fallback — should never reach
+        return Vector2{ (float)centerX, (float)centerY }; // fallback
+    }
+
+    static Vector2 spawnNearPort(uint64_t seed, const Port& port)
+    {
+        int halfTilesX = GetScreenWidth() / 2 / surface_sector_size;
+        int halfTilesY = GetScreenHeight() / 2 / surface_sector_size;
+        int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
+
+        for (auto& d : dirs) {
+            int tx = port.x + d[0];
+            int ty = port.y + d[1];
+            double wx = tx * surface_sector_size * surface_zoom;
+            double wy = ty * surface_sector_size * surface_zoom;
+            if (sampleHeight(wx, wy, seed) >= 0.50)
+                return Vector2{ (float)(tx - halfTilesX), (float)(ty - halfTilesY) };
+        }
+        return findLandSpawn(seed, 20, port.x, port.y); // fallback
     }
 
 
@@ -113,6 +200,7 @@ namespace surface_loop
     GameScreen runGameLoop()
     {
         loadPlayerTexture();
+        loadPortTexture();
         int p_x = static_cast<int>(floor(current_planet.x));
         int p_y = static_cast<int>(floor(current_planet.y));
 
@@ -121,6 +209,30 @@ namespace surface_loop
         bool config_exists = fileExists(getPlanetPath(p_x, p_y));
         if (!config_exists) {
             surface_camera = findLandSpawn(planetSeed, 200);
+            int halfTilesX = GetScreenWidth() / 2 / surface_sector_size;
+            int halfTilesY = GetScreenHeight() / 2 / surface_sector_size;
+            int playerTileX = static_cast<int>(floor(surface_camera.x)) + halfTilesX;
+            int playerTileY = static_cast<int>(floor(surface_camera.y)) + halfTilesY;
+
+            Port p = { playerTileX + 10, playerTileY };
+            int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
+            for (auto& d : dirs) {
+                int tx = playerTileX + d[0];
+                int ty = playerTileY + d[1];
+                double wx = tx * surface_sector_size * surface_zoom;
+                double wy = ty * surface_sector_size * surface_zoom;
+                if (sampleHeight(wx, wy, planetSeed) >= 0.50) {
+                    p = { tx, ty };
+                    break;
+                }
+            }
+            surface_ports = { p };
+            savePorts(getPlanetPath(p_x, p_y));
+        }
+        else {
+            loadPorts(getPlanetPath(p_x, p_y));
+            if (!surface_ports.empty())
+                surface_camera = spawnNearPort(planetSeed, surface_ports[0]);
         }
 
         while (true)
@@ -137,6 +249,8 @@ namespace surface_loop
                 drawSurface();
 
                 float moveAmount = surface_speed * 60.0f * GetFrameTime();
+                old_pos.x = surface_camera.x;
+                old_pos.y = surface_camera.y;
 
                 if (IsKeyDown(KEY_C))
                 {
@@ -159,10 +273,22 @@ namespace surface_loop
                     surface_camera.x += moveAmount;
                 }
 
+                int playerSectorX = static_cast<int>(floor(surface_camera.x)) + GetScreenWidth() / 2 / surface_sector_size;
+                int playerSectorY = static_cast<int>(floor(surface_camera.y)) + GetScreenHeight() / 2 / surface_sector_size;
+                
+                for (const auto& port : surface_ports) {
+                    int dx = playerSectorX - port.x;
+                    int dy = playerSectorY - port.y;
+                    if (dx * dx + dy * dy < 16) {
+                        return GameScreen::SPACE;
+                    }
+                }
+
             EndDrawing();
         }
 
         unloadPlayerTexture();
+        unloadPortTexture();
 
         return GameScreen::SURFACE;
     }
@@ -170,6 +296,14 @@ namespace surface_loop
     void drawSurface()
     {
         generateSurface();
+        int cam_x_int = static_cast<int>(floor(surface_camera.x));
+        int cam_y_int = static_cast<int>(floor(surface_camera.y));
+
+        for (const auto& port : surface_ports) {
+            float px = (port.x - cam_x_int) * surface_sector_size - 32;
+            float py = (port.y - cam_y_int) * surface_sector_size - 32;
+            DrawTexture(portTexture, (int)px, (int)py, WHITE);
+        }
         drawPlayer(rotation);
     }
 
@@ -197,6 +331,20 @@ namespace surface_loop
                 if (height > 1.0) height = 1.0;
 
                 Color color = heightToColor(height);
+
+                float centerX = GetScreenWidth() / 2.0f;
+                float centerY = GetScreenHeight() / 2.0f;
+            
+                // Check if the player it running into the water
+                if (height < 0.23)
+                {
+                    if ((x * surface_sector_size) <= centerX && centerX <= (x * surface_sector_size) + surface_sector_size &&
+                        (y * surface_sector_size) <= centerY && centerY <= (y * surface_sector_size) + surface_sector_size)
+                    {
+                        surface_camera.x = old_pos.x;
+                        surface_camera.y = old_pos.y;
+                    }
+                }
 
                 DrawRectangle(
                     x * surface_sector_size,

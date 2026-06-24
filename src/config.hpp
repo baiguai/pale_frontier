@@ -31,12 +31,8 @@ inline void getCurrentPlanet()
 
 inline void setCurrentPlanet(int sector_x, int sector_y)
 {
-    const std::string file_loc = getPlanetPath(sector_x, sector_y);
     saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
     saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
-    saveJsonValue(file_loc, "planet.x", current_planet.x);
-    saveJsonValue(file_loc, "planet.y", current_planet.y);
-    std::cout << "planet config: " << file_loc << "\n";
 }
 
 inline void loadVarsFromConfig()
