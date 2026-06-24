@@ -8,6 +8,7 @@ namespace surface_loop
 
     inline double elevation_deep_water    { 0.15 };
     inline double elevation_water         { 0.22 };
+    inline double elevation_walkable      { 0.23 };
     inline double elevation_shore         { 0.50 };
     inline double elevation_marsh         { 0.58 };
     inline double elevation_forest        { 0.65 };
@@ -139,7 +140,7 @@ namespace surface_loop
                 int psy = centerY - r;             // player sector Y
                 double wx = psx * surface_sector_size * surface_zoom;
                 double wy = psy * surface_sector_size * surface_zoom;
-                if (sampleHeight(wx, wy, seed) >= 0.50)
+                if (sampleHeight(wx, wy, seed) >= elevation_walkable)
                     return Vector2{ (float)(psx - halfTilesX),
                                     (float)(psy - halfTilesY) };
             }
@@ -149,7 +150,7 @@ namespace surface_loop
                 int psy = centerY + r;
                 double wx = psx * surface_sector_size * surface_zoom;
                 double wy = psy * surface_sector_size * surface_zoom;
-                if (sampleHeight(wx, wy, seed) >= 0.50)
+                if (sampleHeight(wx, wy, seed) >= elevation_walkable)
                     return Vector2{ (float)(psx - halfTilesX),
                                     (float)(psy - halfTilesY) };
             }
@@ -159,7 +160,7 @@ namespace surface_loop
                 int psy = centerY + y;
                 double wx = psx * surface_sector_size * surface_zoom;
                 double wy = psy * surface_sector_size * surface_zoom;
-                if (sampleHeight(wx, wy, seed) >= 0.50)
+                if (sampleHeight(wx, wy, seed) >= elevation_walkable)
                     return Vector2{ (float)(psx - halfTilesX),
                                     (float)(psy - halfTilesY) };
             }
@@ -169,7 +170,7 @@ namespace surface_loop
                 int psy = centerY + y;
                 double wx = psx * surface_sector_size * surface_zoom;
                 double wy = psy * surface_sector_size * surface_zoom;
-                if (sampleHeight(wx, wy, seed) >= 0.50)
+                if (sampleHeight(wx, wy, seed) >= elevation_walkable)
                     return Vector2{ (float)(psx - halfTilesX),
                                     (float)(psy - halfTilesY) };
             }
@@ -188,7 +189,7 @@ namespace surface_loop
             int ty = port.y + d[1];
             double wx = tx * surface_sector_size * surface_zoom;
             double wy = ty * surface_sector_size * surface_zoom;
-            if (sampleHeight(wx, wy, seed) >= 0.50)
+            if (sampleHeight(wx, wy, seed) >= elevation_walkable)
                 return Vector2{ (float)(tx - halfTilesX), (float)(ty - halfTilesY) };
         }
         return findLandSpawn(seed, 20, port.x, port.y); // fallback
@@ -221,9 +222,19 @@ namespace surface_loop
                 int ty = playerTileY + d[1];
                 double wx = tx * surface_sector_size * surface_zoom;
                 double wy = ty * surface_sector_size * surface_zoom;
-                if (sampleHeight(wx, wy, planetSeed) >= 0.50) {
+                if (sampleHeight(wx, wy, planetSeed) >= elevation_walkable) {
                     p = { tx, ty };
                     break;
+                }
+            }
+            {
+                double wx = p.x * surface_sector_size * surface_zoom;
+                double wy = p.y * surface_sector_size * surface_zoom;
+                if (sampleHeight(wx, wy, planetSeed) < elevation_walkable) {
+                    auto pos = findLandSpawn(planetSeed, 20, playerTileX, playerTileY);
+                    Vector2 landSector = { pos.x + (float)(GetScreenWidth() / 2 / surface_sector_size),
+                                           pos.y + (float)(GetScreenHeight() / 2 / surface_sector_size) };
+                    p = { (int)landSector.x, (int)landSector.y };
                 }
             }
             surface_ports = { p };
@@ -284,7 +295,7 @@ namespace surface_loop
                     double h = sampleHeight(wx, wy, ps);
                     if (h < 0.0) h = 0.0;
                     if (h > 1.0) h = 1.0;
-                    if (h < 0.23) {
+                    if (h < elevation_walkable) {
                         surface_camera.x = old_pos.x;
                         surface_camera.y = old_pos.y;
                     }
