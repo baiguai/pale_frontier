@@ -246,8 +246,6 @@ namespace surface_loop
 
                 ClearBackground(GREEN);
 
-                drawSurface();
-
                 float moveAmount = surface_speed * 60.0f * GetFrameTime();
                 old_pos.x = surface_camera.x;
                 old_pos.y = surface_camera.y;
@@ -272,6 +270,27 @@ namespace surface_loop
                     rotation = 90.0f;
                     surface_camera.x += moveAmount;
                 }
+
+                {
+                    int cur_p_x = static_cast<int>(floor(current_planet.x));
+                    int cur_p_y = static_cast<int>(floor(current_planet.y));
+                    uint64_t ps = Frand::PerfectHash(cur_p_x, cur_p_y);
+                    int cxi = static_cast<int>(floor(surface_camera.x));
+                    int cyi = static_cast<int>(floor(surface_camera.y));
+                    int ctx = (GetScreenWidth() / 2) / surface_sector_size;
+                    int cty = (GetScreenHeight() / 2) / surface_sector_size;
+                    double wx = (cxi + ctx) * surface_sector_size * surface_zoom;
+                    double wy = (cyi + cty) * surface_sector_size * surface_zoom;
+                    double h = sampleHeight(wx, wy, ps);
+                    if (h < 0.0) h = 0.0;
+                    if (h > 1.0) h = 1.0;
+                    if (h < 0.23) {
+                        surface_camera.x = old_pos.x;
+                        surface_camera.y = old_pos.y;
+                    }
+                }
+
+                drawSurface();
 
                 int playerSectorX = static_cast<int>(floor(surface_camera.x)) + GetScreenWidth() / 2 / surface_sector_size;
                 int playerSectorY = static_cast<int>(floor(surface_camera.y)) + GetScreenHeight() / 2 / surface_sector_size;
@@ -331,20 +350,6 @@ namespace surface_loop
                 if (height > 1.0) height = 1.0;
 
                 Color color = heightToColor(height);
-
-                float centerX = GetScreenWidth() / 2.0f;
-                float centerY = GetScreenHeight() / 2.0f;
-            
-                // Check if the player it running into the water
-                if (height < 0.23)
-                {
-                    if ((x * surface_sector_size) <= centerX && centerX <= (x * surface_sector_size) + surface_sector_size &&
-                        (y * surface_sector_size) <= centerY && centerY <= (y * surface_sector_size) + surface_sector_size)
-                    {
-                        surface_camera.x = old_pos.x;
-                        surface_camera.y = old_pos.y;
-                    }
-                }
 
                 DrawRectangle(
                     x * surface_sector_size,

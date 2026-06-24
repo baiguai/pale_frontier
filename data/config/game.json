@@ -1,11 +1,11 @@
 {
   "game": {
-    "screen": "SPACE"
+    "screen": "SURFACE"
   },
   "startup": {
     "planet": {
-      "x": 14422.0,
-      "y": 18429.0
+      "x": 14565.0,
+      "y": 19213.0
     }
   }
 }
