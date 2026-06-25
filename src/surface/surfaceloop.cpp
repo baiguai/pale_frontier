@@ -49,6 +49,45 @@ namespace surface_loop
         return count;
     }
 
+    static void loadElevations(int variantIdx)
+    {
+        std::string num = variantIdx < 9 ? "0" + std::to_string(variantIdx + 1) : std::to_string(variantIdx + 1);
+        std::string path = "data/surface/config/surface_" + num + ".json";
+
+        std::ifstream in(path);
+        if (!in.good())
+        {
+            elevation_deep_water    = 0.15;
+            elevation_water         = 0.22;
+            elevation_walkable      = 0.221;
+            elevation_shore         = 0.40;
+            elevation_marsh         = 0.52;
+            elevation_forest        = 0.55;
+            elevation_grassland     = 0.60;
+            elevation_rocky         = 0.67;
+            elevation_mountain_foot = 0.72;
+            elevation_high_mountain = 0.80;
+            return;
+        }
+
+        json j;
+        in >> j;
+
+        if (j.contains("elevations"))
+        {
+            auto& e = j["elevations"];
+            elevation_deep_water    = e.value("deep_water", 0.15);
+            elevation_water         = e.value("water", 0.22);
+            elevation_walkable      = e.value("walkable", 0.221);
+            elevation_shore         = e.value("shore", 0.40);
+            elevation_marsh         = e.value("marsh", 0.52);
+            elevation_forest        = e.value("forest", 0.55);
+            elevation_grassland     = e.value("grassland", 0.60);
+            elevation_rocky         = e.value("rocky", 0.67);
+            elevation_mountain_foot = e.value("mountain_foot", 0.72);
+            elevation_high_mountain = e.value("high_mountain", 0.80);
+        }
+    }
 
     struct Port {
         int x;
@@ -237,6 +276,11 @@ namespace surface_loop
         int p_y = static_cast<int>(floor(current_planet.y));
 
         uint64_t planetSeed = Frand::PerfectHash(p_x, p_y);
+
+        frand.seed = planetSeed;
+        frand.randInteger(0, planet_distance);
+        int planetIndex = frand.randInteger(0, surfaceConfigCount());
+        loadElevations(planetIndex);
 
         bool config_exists = fileExists(getPlanetPath(p_x, p_y));
         if (!config_exists) {
