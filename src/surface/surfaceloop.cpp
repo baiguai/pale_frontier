@@ -255,11 +255,10 @@ namespace surface_loop
         int halfTilesY = GetScreenHeight() / 2 / surface_sector_size;
 
         Vector2 landLoc = findLand(seed, port.x, port.y);
-        if (landLoc.x != port.x && landLoc.y != port.y)
+        if (landLoc.x != port.x || landLoc.y != port.y)
         {
-            landLoc.x = (float)(landLoc.x - halfTilesX);
-            landLoc.y = (float)(landLoc.y - halfTilesY);
-            return landLoc;
+            return Vector2{ (float)(landLoc.x - halfTilesX),
+                            (float)(landLoc.y - halfTilesY) };
         }
 
         return findLandSpawn(seed, 20, port.x, port.y); // fallback
@@ -290,32 +289,19 @@ namespace surface_loop
             int playerTileX = static_cast<int>(floor(surface_camera.x)) + halfTilesX;
             int playerTileY = static_cast<int>(floor(surface_camera.y)) + halfTilesY;
 
-            // Port p = { playerTileX + 10, playerTileY };
-            Port p = { playerTileX, playerTileY };
-            Vector2 landLoc = findLand(planetSeed, p.x, p.y);
-            p.x = landLoc.x + 10;
-            p.y = landLoc.y;
-
-            // int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
-            // for (auto& d : dirs) {
-            //     int tx = playerTileX + d[0];
-            //     int ty = playerTileY + d[1];
-            //     double wx = tx * surface_sector_size * surface_zoom;
-            //     double wy = ty * surface_sector_size * surface_zoom;
-            //     if (sampleHeight(wx, wy, planetSeed) >= elevation_walkable) {
-            //         p = { tx, ty };
-            //         break;
-            //     }
-            // }
+            Vector2 landLoc = findLand(planetSeed, playerTileX, playerTileY);
+            Port p;
+            if ((int)landLoc.x == playerTileX && (int)landLoc.y == playerTileY)
+                p = { playerTileX + 10, playerTileY };
+            else
+                p = { (int)landLoc.x, (int)landLoc.y };
 
             {
                 double wx = p.x * surface_sector_size * surface_zoom;
                 double wy = p.y * surface_sector_size * surface_zoom;
                 if (sampleHeight(wx, wy, planetSeed) < elevation_walkable) {
                     auto pos = findLandSpawn(planetSeed, 20, playerTileX, playerTileY);
-                    Vector2 landSector = { pos.x + (float)(GetScreenWidth() / 2 / surface_sector_size),
-                                           pos.y + (float)(GetScreenHeight() / 2 / surface_sector_size) };
-                    p = { (int)landSector.x, (int)landSector.y };
+                    p = { (int)(pos.x + halfTilesX), (int)(pos.y + halfTilesY) };
                 }
             }
             surface_ports = { p };
