@@ -48,12 +48,12 @@ namespace space_loop
         planetTextures.clear();
     }
 
-    void drawPlanets()
+    GameScreen drawPlanets()
     {
         if (planetTextures.empty())
         {
             std::cout << "ERROR:: Planet textures are empty.\n";
-            return;
+            return GameScreen::SPACE;
         }
 
         int sec_num_x = GetScreenWidth() / planet_sector_size;
@@ -92,10 +92,27 @@ namespace space_loop
                     if (draw_x <= centerX && centerX <= draw_x + texW &&
                         draw_y <= centerY && centerY <= draw_y + texH)
                     {
-                        std::cout << "Landed on the planet!!!\n";
+                        std::cout << "Landed on the planet: " << global_sector.x << ", " << global_sector.y << "\n";
+                        space_camera.x = space_camera.x - planet_sector_size;
+                        configurePlanet(global_sector.x, global_sector.y);
+                        return GameScreen::SURFACE;
                     }
                 }
             }
         }
+
+        return GameScreen::SPACE;
     }
+
+
+    // ---- Configuration ------------------------------------------------------
+
+    void configurePlanet(int sector_x, int sector_y)
+    {
+        current_planet.x = sector_x;
+        current_planet.y = sector_y;
+        setCurrentPlanet(sector_x, sector_y);
+    }
+
+    //--------------------------------------------------------------------------
 }

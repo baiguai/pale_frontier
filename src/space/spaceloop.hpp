@@ -4,7 +4,7 @@
 namespace space_loop
 {
     GameScreen runGameLoop();
-    void drawSpace();
+    GameScreen drawSpace();
 }
 
 #endif

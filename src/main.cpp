@@ -25,7 +25,7 @@
 
 int main(void)
 {
-    SetConfigFlags(FLAG_FULLSCREEN_MODE);
+    // SetConfigFlags(FLAG_FULLSCREEN_MODE);
     InitWindow(window_width, window_height, title);
     SetTargetFPS(60);
     HideCursor();
@@ -39,6 +39,8 @@ int main(void)
 
     while (running)
     {
+        std::cout << "Screen: " << static_cast<int>(currentScreen) << std::endl;
+
         if (IsKeyPressed(KEY_Q))
         {
             running = false;
@@ -48,7 +50,13 @@ int main(void)
         switch (currentScreen)
         {
             case GameScreen::SPACE:
+                setCurrentScreen(currentScreen);
                 currentScreen = space_loop::runGameLoop();
+                break;
+
+            case GameScreen::SURFACE:
+                setCurrentScreen(currentScreen);
+                currentScreen = surface_loop::runGameLoop();
                 break;
         }
 

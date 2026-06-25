@@ -2,68 +2,49 @@
 
 namespace space_loop
 {
+    static std::vector<Texture2D> starTextures;
+
+    void loadStarTextures()
+    {
+        starTextures.clear();
+        const char* names[] = { "stars_01.png", "stars_02.png", "stars_03.png" };
+        for (const char* name : names) {
+            std::string path = std::string("data/space/assets/stars/") + name;
+            starTextures.push_back(LoadTexture(path.c_str()));
+        }
+    }
+
+    void unloadStarTextures()
+    {
+        for (auto& tex : starTextures)
+            UnloadTexture(tex);
+        starTextures.clear();
+    }
+
     void drawStars()
     {
-        const Color star_color = Color{ 30, 30, 30, 255 };
+        if (starTextures.size() < 3) return;
 
-        int sec_num_x = GetScreenWidth() / star_sector_size_01;
-        int sec_num_y = GetScreenHeight() / star_sector_size_01;
+        struct { Texture2D& tex; float speed; } layers[] = {
+            { starTextures[0], star_speed_01 },
+            { starTextures[1], star_speed_02 },
+            { starTextures[2], star_speed_03 },
+        };
 
-        float radius = 1;
+        for (auto& l : layers) {
+            float ox = -fmodf(space_camera.x * l.speed, (float)l.tex.width);
+            float oy = -fmodf(space_camera.y * l.speed, (float)l.tex.height);
+            if (ox > 0) ox -= (float)l.tex.width;
+            if (oy > 0) oy -= (float)l.tex.height;
 
-        renderStars(star_color, star_sector_size_01, star_distance_01, sec_num_x, sec_num_y, radius);
+            int tilesX = GetScreenWidth()  / l.tex.width  + 2;
+            int tilesY = GetScreenHeight() / l.tex.height + 2;
 
-        drawStars2();
-    }
-
-    void drawStars2()
-    {
-        const Color star_color = Color{ 60, 60, 60, 255 };
-
-        int sec_num_x = GetScreenWidth() / star_sector_size_02;
-        int sec_num_y = GetScreenHeight() / star_sector_size_02;
-
-        float radius = 2;
-
-        renderStars(star_color, star_sector_size_02, star_distance_02, sec_num_x, sec_num_y, radius);
-
-        drawStars3();
-    }
-
-    void drawStars3()
-    {
-        const Color star_color = Color{ 110, 110, 110, 255 };
-
-        int sec_num_x = GetScreenWidth() / star_sector_size_03;
-        int sec_num_y = GetScreenHeight() / star_sector_size_03;
-
-        float radius = frand.randInteger(2, 4);
-
-        renderStars(star_color, star_sector_size_03, star_distance_03, sec_num_x, sec_num_y, radius);
-    }
-
-    void renderStars(Color star_color, int sector_size, int star_distance, int sec_num_x, int sec_num_y, float radius)
-    {
-        int cam_x_int = static_cast<int>(floor(space_camera.x));
-        int cam_y_int = static_cast<int>(floor(space_camera.y));
-        float cam_x_frac = space_camera.x - floor(space_camera.x);
-        float cam_y_frac = space_camera.y - floor(space_camera.y);
-
-        for (int x = 0; x < sec_num_x; x++)
-        {
-            for (int y = 0; y < sec_num_y; y++)
-            {
-                Point global_sector { cam_x_int + x, cam_y_int + y };
-
-                frand.seed = Frand::PerfectHash(global_sector.x, global_sector.y);
-
-                if (frand.randInteger(0, star_distance) == 1)
-                {
-                    float draw_x = (x - cam_x_frac) * sector_size + radius;
-                    float draw_y = (y - cam_y_frac) * sector_size + radius;
-                    DrawCircle(draw_x, draw_y, radius, star_color);
-                }
-            }
+            for (int tx = 0; tx < tilesX; tx++)
+                for (int ty = 0; ty < tilesY; ty++)
+                    DrawTexture(l.tex,
+                                ox + tx * l.tex.width,
+                                oy + ty * l.tex.height, WHITE);
         }
     }
 }
