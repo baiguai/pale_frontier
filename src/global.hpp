@@ -25,7 +25,7 @@ inline float star_speed_02 { 2.0f };
 inline float star_speed_03 { 3.0f };
 
 inline Vector2 current_planet{ 0, 0 };
-inline float surface_zoom { 0.3f };
+inline float surface_zoom { 0.5f }; // The smaller the more zoomed in
 inline Vector2 surface_camera{ 0, 0 };
 inline float surface_speed {0.5f };
 const int surface_sector_size { 8 };

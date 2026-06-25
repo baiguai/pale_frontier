@@ -6,16 +6,16 @@ namespace surface_loop
 {
     float rotation { 0.0f };
 
-    inline double elevation_deep_water    { 0.15 };
-    inline double elevation_water         { 0.22 };
-    inline double elevation_walkable      { 0.221 };
-    inline double elevation_shore         { 0.50 };
-    inline double elevation_marsh         { 0.58 };
-    inline double elevation_forest        { 0.65 };
-    inline double elevation_grassland     { 0.72 };
-    inline double elevation_rocky         { 0.80 };
-    inline double elevation_mountain_foot { 0.88 };
-    inline double elevation_high_mountain { 0.95 };
+    static double elevation_deep_water;
+    static double elevation_water;
+    static double elevation_walkable;
+    static double elevation_shore;
+    static double elevation_marsh;
+    static double elevation_forest;
+    static double elevation_grassland;
+    static double elevation_rocky;
+    static double elevation_mountain_foot;
+    static double elevation_high_mountain;
 
     static Vector2 old_pos = surface_camera;
 
@@ -31,6 +31,22 @@ namespace surface_loop
         if (height < elevation_mountain_foot) return Color{ 140, 140, 140, 255 };
         if (height < elevation_high_mountain) return Color{ 190, 190, 190, 255 };
         return                                Color{ 240, 240, 240, 255 };
+    }
+
+
+    static int surfaceConfigCount()
+    {
+        static int count = 0;
+        if (count == 0)
+        {
+            for (const auto& entry : fs::directory_iterator("data/surface/config/"))
+            {
+                if (entry.is_regular_file() && entry.path().extension() == ".json")
+                    count++;
+            }
+            count = std::max(count, 1);
+        }
+        return count;
     }
 
 
@@ -178,20 +194,35 @@ namespace surface_loop
         return Vector2{ (float)centerX, (float)centerY }; // fallback
     }
 
+    static Vector2 findLand(uint64_t seed, const int itemX, const int itemY)
+    {
+        int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
+
+        for (auto& d : dirs) {
+            int tx = itemX + d[0];
+            int ty = itemY + d[1];
+            double wx = tx * surface_sector_size * surface_zoom;
+            double wy = ty * surface_sector_size * surface_zoom;
+            if (sampleHeight(wx, wy, seed) >= elevation_walkable)
+                return Vector2{ (float)tx, (float)ty };
+        }
+
+        return Vector2{ (float)itemX, (float)itemY };
+    }
+
     static Vector2 spawnNearPort(uint64_t seed, const Port& port)
     {
         int halfTilesX = GetScreenWidth() / 2 / surface_sector_size;
         int halfTilesY = GetScreenHeight() / 2 / surface_sector_size;
-        int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
 
-        for (auto& d : dirs) {
-            int tx = port.x + d[0];
-            int ty = port.y + d[1];
-            double wx = tx * surface_sector_size * surface_zoom;
-            double wy = ty * surface_sector_size * surface_zoom;
-            if (sampleHeight(wx, wy, seed) >= elevation_walkable)
-                return Vector2{ (float)(tx - halfTilesX), (float)(ty - halfTilesY) };
+        Vector2 landLoc = findLand(seed, port.x, port.y);
+        if (landLoc.x != port.x && landLoc.y != port.y)
+        {
+            landLoc.x = (float)(landLoc.x - halfTilesX);
+            landLoc.y = (float)(landLoc.y - halfTilesY);
+            return landLoc;
         }
+
         return findLandSpawn(seed, 20, port.x, port.y); // fallback
     }
 
@@ -215,18 +246,24 @@ namespace surface_loop
             int playerTileX = static_cast<int>(floor(surface_camera.x)) + halfTilesX;
             int playerTileY = static_cast<int>(floor(surface_camera.y)) + halfTilesY;
 
-            Port p = { playerTileX + 10, playerTileY };
-            int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
-            for (auto& d : dirs) {
-                int tx = playerTileX + d[0];
-                int ty = playerTileY + d[1];
-                double wx = tx * surface_sector_size * surface_zoom;
-                double wy = ty * surface_sector_size * surface_zoom;
-                if (sampleHeight(wx, wy, planetSeed) >= elevation_walkable) {
-                    p = { tx, ty };
-                    break;
-                }
-            }
+            // Port p = { playerTileX + 10, playerTileY };
+            Port p = { playerTileX, playerTileY };
+            Vector2 landLoc = findLand(planetSeed, p.x, p.y);
+            p.x = landLoc.x + 10;
+            p.y = landLoc.y;
+
+            // int dirs[4][2] = {{10,0}, {-10,0}, {0,10}, {0,-10}};
+            // for (auto& d : dirs) {
+            //     int tx = playerTileX + d[0];
+            //     int ty = playerTileY + d[1];
+            //     double wx = tx * surface_sector_size * surface_zoom;
+            //     double wy = ty * surface_sector_size * surface_zoom;
+            //     if (sampleHeight(wx, wy, planetSeed) >= elevation_walkable) {
+            //         p = { tx, ty };
+            //         break;
+            //     }
+            // }
+
             {
                 double wx = p.x * surface_sector_size * surface_zoom;
                 double wy = p.y * surface_sector_size * surface_zoom;
