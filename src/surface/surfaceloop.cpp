@@ -150,7 +150,7 @@ namespace surface_loop
 
     static double perlinGrid(int gx, int gy, double dx, double dy, uint64_t seed)
     {
-        frand.seed = Frand::PerfectHash(gx, gy) ^ seed;
+        frand.seed = Frand::PerfectHash(gx, gy, game_init_seed) ^ seed;
         double angle = frand.randDouble(0.0, PI * 2.0);
         return dx * cos(angle) + dy * sin(angle);
     }
@@ -274,12 +274,14 @@ namespace surface_loop
         int p_x = static_cast<int>(floor(current_planet.x));
         int p_y = static_cast<int>(floor(current_planet.y));
 
-        uint64_t planetSeed = Frand::PerfectHash(p_x, p_y);
+        uint64_t planetSeed = Frand::PerfectHash(p_x, p_y, game_init_seed);
 
         frand.seed = planetSeed;
         frand.randInteger(0, planet_distance);
         int planetIndex = frand.randInteger(0, surfaceConfigCount());
         loadElevations(planetIndex);
+
+        loadCloudTexture(planetIndex);
 
         bool config_exists = fileExists(getPlanetPath(p_x, p_y));
         if (!config_exists) {
@@ -352,7 +354,7 @@ namespace surface_loop
                 {
                     int cur_p_x = static_cast<int>(floor(current_planet.x));
                     int cur_p_y = static_cast<int>(floor(current_planet.y));
-                    uint64_t ps = Frand::PerfectHash(cur_p_x, cur_p_y);
+                    uint64_t ps = Frand::PerfectHash(cur_p_x, cur_p_y, game_init_seed);
                     int cxi = static_cast<int>(floor(surface_camera.x));
                     int cyi = static_cast<int>(floor(surface_camera.y));
                     int ctx = (GetScreenWidth() / 2) / surface_sector_size;
@@ -386,6 +388,7 @@ namespace surface_loop
 
         unloadPlayerTexture();
         unloadPortTexture();
+        unloadCloudTexture();
 
         return GameScreen::SURFACE;
     }
@@ -402,13 +405,14 @@ namespace surface_loop
             DrawTexture(portTexture, (int)px, (int)py, WHITE);
         }
         drawPlayer(rotation);
+        drawClouds();
     }
 
     void generateSurface()
     {
         int cur_p_x = static_cast<int>(floor(current_planet.x));
         int cur_p_y = static_cast<int>(floor(current_planet.y));
-        uint64_t planetSeed = Frand::PerfectHash(cur_p_x, cur_p_y);
+        uint64_t planetSeed = Frand::PerfectHash(cur_p_x, cur_p_y, game_init_seed);
 
         int cam_x_int = static_cast<int>(floor(surface_camera.x));
         int cam_y_int = static_cast<int>(floor(surface_camera.y));

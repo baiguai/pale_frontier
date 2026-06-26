@@ -12,6 +12,7 @@ SOURCES=(
     "src/space/stars.cpp"
     "src/space/player.cpp"
     "src/surface/player.cpp"
+    "src/surface/clouds.cpp"
     "src/fastrand.cpp"
 )
 
@@ -30,6 +31,7 @@ HEADERS=(
     "src/space/stars.hpp"
     "src/space/player.hpp"
     "src/surface/player.hpp"
+    "src/surface/clouds.hpp"
     "src/fastrand.hpp"
     "libs/raylib/raylib.h"
     "libs/nlohmann/json.hpp"

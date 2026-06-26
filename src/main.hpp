@@ -32,6 +32,7 @@ inline GameScreen currentScreen { GameScreen::SPACE };
 #include "space/player.hpp"
 #include "surface/surfaceloop.hpp"
 #include "surface/player.hpp"
+#include "surface/clouds.hpp"
 
 void drawSpace();
 
