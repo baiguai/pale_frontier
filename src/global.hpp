@@ -34,6 +34,11 @@ inline Vector2 surface_camera{ 0, 0 };
 inline float surface_speed {0.5f };
 const int surface_sector_size { 8 };
 
+
+inline int player_space_fuel { 100 };
+inline int player_surface_fuel { 100 };
+
+
 inline Frand::FastRand frand{};
 
 #include "main.hpp"

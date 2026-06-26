@@ -68,7 +68,7 @@ int main(void)
     }
 
 
-    saveVarsFromConfig();
+    saveVarsToConfig();
 
 
     CloseWindow();

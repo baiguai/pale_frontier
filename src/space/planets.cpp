@@ -111,7 +111,7 @@ namespace space_loop
     {
         current_planet.x = sector_x;
         current_planet.y = sector_y;
-        setCurrentPlanet(sector_x, sector_y);
+        setCurrentPlanet();
     }
 
     //--------------------------------------------------------------------------

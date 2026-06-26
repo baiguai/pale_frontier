@@ -14,12 +14,14 @@ enum class GameScreen
     SPACE,
     SURFACE,
     BASE,
+    GAME_OVER,
     QUIT
 };
 inline GameScreen currentScreen { GameScreen::SPACE };
 
 #include "../libs/raylib/raylib.h"
 #include "fastrand.hpp"
+#include "random.h"
 #include <iostream>
 #include <cmath>
 #include "global.hpp"

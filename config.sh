@@ -33,6 +33,7 @@ HEADERS=(
     "src/surface/player.hpp"
     "src/surface/clouds.hpp"
     "src/fastrand.hpp"
+    "src/random.h"
     "libs/raylib/raylib.h"
     "libs/nlohmann/json.hpp"
     "libs/raylib/raymath.h"

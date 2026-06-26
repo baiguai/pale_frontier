@@ -29,7 +29,7 @@ inline void getCurrentPlanet()
     current_planet.y = readJsonValue("data/config/game.json", "startup.planet.y", 0);
 }
 
-inline void setCurrentPlanet(int sector_x, int sector_y)
+inline void setCurrentPlanet()
 {
     saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
     saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
@@ -48,6 +48,7 @@ inline void loadVarsFromConfig()
     else
         currentScreen = GameScreen::SPACE; // Later this may be the menu or similar.
 
+    player_space_fuel = readJsonValue("data/config/space.json", "player.fuel", 100);
     planet_distance = readJsonValue("data/config/space.json", "planets.distance", 64000);
     star_distance_01 = readJsonValue("data/config/space.json", "stars.lvl1.distance", 9000);
     star_distance_02 = readJsonValue("data/config/space.json", "stars.lvl2.distance", 3000);
@@ -65,10 +66,11 @@ inline void loadVarsFromConfig()
     surface_camera.y = readJsonValue("data/config/surface.json", "game.location.y", 0);
 }
 
-inline void saveVarsFromConfig()
+inline void saveVarsToConfig()
 {
     saveJsonValue("data/config/game.json", "game.init.seed", game_init_seed);
 
+    saveJsonValue("data/config/space.json", "player.fuel", player_space_fuel);
     saveJsonValue("data/config/space.json", "planets.distance", planet_distance);
     saveJsonValue("data/config/space.json", "stars.lvl1.distance", star_distance_01);
     saveJsonValue("data/config/space.json", "stars.lvl2.distance", star_distance_02);

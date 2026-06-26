@@ -35,6 +35,9 @@ namespace space_loop
 
         DrawTexturePro(playerTexture, sourceRec, destRec, origin, rotation, WHITE);
 
-        // DrawTexture(playerTexture, draw_x, draw_y, WHITE);
+        Font font = GetFontDefault();
+        Vector2 position = { 20, 20 };
+        std::string fuel = "Player Fuel: " + std::to_string(player_space_fuel);
+        DrawTextEx(font, fuel.c_str(), position, 20, 2, WHITE);
     }
 }
