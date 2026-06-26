@@ -128,6 +128,7 @@ namespace surface_loop
 
     static void loadPorts(const std::string& path)
     {
+        surface_ports.clear();
         std::ifstream in(path);
         if (!in.good()) return;
         json j; in >> j;
