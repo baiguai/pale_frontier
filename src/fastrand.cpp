@@ -21,10 +21,11 @@ double Frand::FastRand::randDouble(double min, double max)
   return ((double)rnd() / (double)(UINT32_MAX)) * (max - min) + min;
 }
 
-uint64_t Frand::PerfectHash(uint32_t a, uint32_t b)
+uint64_t Frand::PerfectHash(uint32_t a, uint32_t b, uint64_t seed)
 {
   uint64_t A = (uint64_t)(a >= 0 ? 2 * (int64_t)a : -2 * (int64_t)a - 1);
   uint64_t B = (uint64_t)(b >= 0 ? 2 * (int64_t)b : -2 * (int64_t)b - 1);
   int64_t C = (int64_t)((A >= B ? A * A + A + B : A + B * B) / 2);
-  return (a < 0 && b < 0) || (a >= 0 && b >= 0) ? C : -C - 1;
+  uint64_t result =  (a < 0 && b < 0) || (a >= 0 && b >= 0) ? C : -C - 1;
+  return result ^ seed;
 };

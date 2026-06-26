@@ -8,6 +8,18 @@
 
 using json = nlohmann::json;
 
+// ---- Tools ------------------------------------------------------------------
+inline bool fileExists(const std::string& path)
+{
+    std::ifstream in(path);
+    return in.good();
+}
+// -----------------------------------------------------------------------------
+
+
+
+
+
 // ---- Create Directory -------------------------------------------------------
 inline bool createDirectories(const std::string& path)
 {

@@ -21,7 +21,8 @@ if [ ! -d "build" ]; then
 fi
 
 echo "Building Windows EXE..."
-./build-windows.sh || echo "Warning: Windows build failed, continuing with Linux build..."
+# TODO: Uncomment later
+# ./build-windows.sh || echo "Warning: Windows build failed, continuing with Linux build..."
 
 # Navigate to build directory
 cd build

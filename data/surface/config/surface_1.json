@@ -1,0 +1,14 @@
+{
+  "elevations": {
+    "deep_water": 0.05,
+    "water": 0.09,
+    "walkable": 0.091,
+    "shore": 0.40,
+    "marsh": 0.41,
+    "forest": 0.42,
+    "grassland": 0.43,
+    "rocky": 0.50,
+    "mountain_foot": 0.65,
+    "high_mountain": 0.85
+  }
+}

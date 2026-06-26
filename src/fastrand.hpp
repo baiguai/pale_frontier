@@ -14,8 +14,8 @@ namespace Frand
         double randDouble(double min, double max);
     };
 
-    uint64_t PerfectHash(uint32_t a, uint32_t b);
+    uint64_t PerfectHash(uint32_t a, uint32_t b, uint64_t seed);
 
-} // Frand namespace
+}
 
 #endif
