@@ -72,7 +72,7 @@ namespace space_loop
             {
                 Point global_sector { cam_x_int + x, cam_y_int + y };
 
-                frand.seed = Frand::PerfectHash(global_sector.x, global_sector.y);
+                frand.seed = Frand::PerfectHash(global_sector.x, global_sector.y, game_init_seed);
 
                 if (frand.randInteger(0, planet_distance) == 1)
                 {

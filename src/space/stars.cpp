@@ -7,7 +7,7 @@ namespace space_loop
     void loadStarTextures()
     {
         starTextures.clear();
-        const char* names[] = { "stars_01.png", "stars_02.png", "stars_03.png" };
+        const char* names[] = { "stars_1.png", "stars_2.png", "stars_3.png" };
         for (const char* name : names) {
             std::string path = std::string("data/space/assets/stars/") + name;
             starTextures.push_back(LoadTexture(path.c_str()));

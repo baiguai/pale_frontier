@@ -4,6 +4,8 @@
 #include "../libs/raylib/raylib.h"
 #include "fastrand.hpp"
 
+inline int game_init_seed;
+
 const int window_height { 1080 };
 const int window_width { 1920 };
 const char* const title { "Pale Frontier" };
@@ -23,6 +25,8 @@ inline int star_distance_03 { 0 };
 inline float star_speed_01 { 1.0f };
 inline float star_speed_02 { 2.0f };
 inline float star_speed_03 { 3.0f };
+
+inline float cloud_speed { 15.0f };
 
 inline Vector2 current_planet{ 0, 0 };
 inline float surface_zoom { 0.5f }; // The smaller the more zoomed in

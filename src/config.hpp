@@ -38,6 +38,7 @@ inline void setCurrentPlanet(int sector_x, int sector_y)
 inline void loadVarsFromConfig()
 {
     std::string_view t { "SPACE" };
+    game_init_seed = readJsonValue("data/config/game.json", "game.init.seed", 23232323);
     std::string_view scr = readJsonValue("data/config/game.json", "game.screen", t);
 
     if (scr == "SPACE")
@@ -66,6 +67,8 @@ inline void loadVarsFromConfig()
 
 inline void saveVarsFromConfig()
 {
+    saveJsonValue("data/config/game.json", "game.init.seed", game_init_seed);
+
     saveJsonValue("data/config/space.json", "planets.distance", planet_distance);
     saveJsonValue("data/config/space.json", "stars.lvl1.distance", star_distance_01);
     saveJsonValue("data/config/space.json", "stars.lvl2.distance", star_distance_02);
