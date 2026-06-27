@@ -1,0 +1,8 @@
+{
+  "game": {
+    "init": {
+      "seed": 23232323
+    },
+    "screen": "SPACE"
+  }
+}

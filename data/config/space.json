@@ -1,0 +1,28 @@
+{
+  "game": {
+    "location": {
+      "x": 14384,
+      "y": 18887
+    }
+  },
+  "items": {
+    "distance": 40
+  },
+  "planets": {
+    "distance": 64000
+  },
+  "player": {
+    "fuel": 100
+  },
+  "stars": {
+    "lvl1": {
+      "distance": 9000
+    },
+    "lvl2": {
+      "distance": 3000
+    },
+    "lvl3": {
+      "distance": 18000
+    }
+  }
+}

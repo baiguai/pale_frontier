@@ -49,6 +49,7 @@ inline void loadVarsFromConfig()
         currentScreen = GameScreen::SPACE; // Later this may be the menu or similar.
 
     player_space_fuel = readJsonValue("data/config/space.json", "player.fuel", 100);
+    item_distance = readJsonValue("data/config/space.json", "items.distance", 40);
     planet_distance = readJsonValue("data/config/space.json", "planets.distance", 64000);
     star_distance_01 = readJsonValue("data/config/space.json", "stars.lvl1.distance", 9000);
     star_distance_02 = readJsonValue("data/config/space.json", "stars.lvl2.distance", 3000);
@@ -71,6 +72,7 @@ inline void saveVarsToConfig()
     saveJsonValue("data/config/game.json", "game.init.seed", game_init_seed);
 
     saveJsonValue("data/config/space.json", "player.fuel", player_space_fuel);
+    saveJsonValue("data/config/space.json", "items.distance", item_distance);
     saveJsonValue("data/config/space.json", "planets.distance", planet_distance);
     saveJsonValue("data/config/space.json", "stars.lvl1.distance", star_distance_01);
     saveJsonValue("data/config/space.json", "stars.lvl2.distance", star_distance_02);

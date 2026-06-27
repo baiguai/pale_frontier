@@ -10,6 +10,8 @@ const int window_height { 1080 };
 const int window_width { 1920 };
 const char* const title { "Pale Frontier" };
 
+inline int item_distance { 0 };
+
 inline Vector2 space_camera{ 0, 0 };
 inline float space_speed {0.5f };
 const int planet_sector_size { 8 };
