@@ -8,7 +8,8 @@ namespace space_loop
 {
     void loadItemTextures();
     void unloadItemTextures();
-    GameScreen drawItems(int sectorX, int sectorY, float drawX, float drawY, const Point& globalSector);
+    GameScreen drawItems();
+    void configureItem(int sector_x, int sector_y);
 }
 
 #endif

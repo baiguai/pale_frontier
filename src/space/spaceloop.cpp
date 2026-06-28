@@ -9,6 +9,7 @@ namespace space_loop
     GameScreen runGameLoop()
     {
         loadPlanetTextures();
+        loadItemTextures();
         loadStarTextures();
         loadPlayerTexture();
         GameScreen next_screen { GameScreen::SPACE };
@@ -79,6 +80,7 @@ namespace space_loop
         }
 
         unloadPlanetTextures();
+        unloadItemTextures();
         unloadStarTextures();
         unloadPlayerTexture();
 
@@ -90,7 +92,13 @@ namespace space_loop
         GameScreen next_scr { GameScreen::SPACE };
 
         drawStars();
+
         next_scr = drawPlanets();
+        if (next_scr != GameScreen::SPACE) return next_scr;
+
+        next_scr = drawItems();
+        if (next_scr != GameScreen::SPACE) return next_scr;
+
         drawPlayer(rotation);
 
         return next_scr;

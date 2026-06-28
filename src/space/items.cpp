@@ -15,7 +15,7 @@ namespace space_loop
         std::string dir = "data/space/assets/items/";
         if (!fs::exists(dir))
         {
-            std::cout << "ERROR:: Item assets DIR does not exist.\n";
+            std::cout << "ERROR:: Items assets DIR does not exist.\n";
             return;
         }
 
@@ -49,10 +49,68 @@ namespace space_loop
         itemTextures.clear();
     }
 
-    GameScreen drawItems(int sectorX, int sectorY, float drawX, float drawY, const Point& globalSector)
+    GameScreen drawItems()
     {
-        if (itemTextures.empty()) return GameScreen::SPACE;
+        if (itemTextures.empty())
+        {
+            std::cout << "ERROR:: Items textures are empty.\n";
+            return GameScreen::SPACE;
+        }
 
-        int texIndex = frand.randInteger(0, itemTextures.size());
+        int sec_num_x = GetScreenWidth() / item_sector_size;
+        int sec_num_y = GetScreenHeight() / item_sector_size;
+
+        int cam_x_int = static_cast<int>(floor(space_camera.x));
+        int cam_y_int = static_cast<int>(floor(space_camera.y));
+        float cam_x_frac = space_camera.x - floor(space_camera.x);
+        float cam_y_frac = space_camera.y - floor(space_camera.y);
+
+        for (int x = 0; x < sec_num_x; x++)
+        {
+            for (int y = 0; y < sec_num_y; y++)
+            {
+                Point global_sector { cam_x_int + x, cam_y_int + y };
+
+                frand.seed = Frand::PerfectHash(global_sector.x, global_sector.y, game_init_seed);
+
+                if (frand.randInteger(0, item_distance) == 1)
+                {
+                    int texIndex = frand.randInteger(0, itemTextures.size());
+
+                    float draw_x = (x - cam_x_frac) * item_sector_size;
+                    float draw_y = (y - cam_y_frac) * item_sector_size;
+
+                    DrawTexture(itemTextures[texIndex], draw_x, draw_y, WHITE);
+
+                    float centerX = GetScreenWidth() / 2.0f;
+                    float centerY = GetScreenHeight() / 2.0f;
+                    float texW = itemTextures[texIndex].width;
+                    float texH = itemTextures[texIndex].height;
+                
+                    // Check if the center of the screen is within the item's texture bounds
+                    if (draw_x <= centerX && centerX <= draw_x + texW &&
+                        draw_y <= centerY && centerY <= draw_y + texH)
+                    {
+                        std::cout << "\n\n";
+                        std::cout << "Taken Item\n\n";
+
+                        configureItem(global_sector.x, global_sector.y);
+
+                        space_camera.x = space_camera.x - item_sector_size;
+                    }
+                }
+            }
+        }
+
+        return GameScreen::SPACE;
     }
+
+    // ---- Configuration ------------------------------------------------------
+
+    void configureItem(int sector_x, int sector_y)
+    {
+        setCurrentPlanet();
+    }
+
+    //--------------------------------------------------------------------------
 }

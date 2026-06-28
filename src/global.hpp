@@ -10,6 +10,7 @@ const int window_height { 1080 };
 const int window_width { 1920 };
 const char* const title { "Pale Frontier" };
 
+const int item_sector_size { 13 };
 inline int item_distance { 0 };
 
 inline Vector2 space_camera{ 0, 0 };

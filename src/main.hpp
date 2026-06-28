@@ -30,6 +30,7 @@ inline GameScreen currentScreen { GameScreen::SPACE };
 #include "main.hpp"
 #include "space/spaceloop.hpp"
 #include "space/planets.hpp"
+#include "space/items.hpp"
 #include "space/stars.hpp"
 #include "space/player.hpp"
 #include "surface/surfaceloop.hpp"
