@@ -35,6 +35,37 @@ inline void setCurrentPlanet()
     saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
 }
 
+inline void loadTakenItems()
+{
+    std::ifstream in("data/config/space.json");
+    if (!in.good()) return;
+    json j; in >> j;
+    if (!j.contains("taken_items")) return;
+    taken_items.clear();
+    for (const auto& o : j["taken_items"])
+        taken_items.push_back({ o["x"], o["y"] });
+}
+
+inline void saveTakenItems()
+{
+    json j;
+    std::ifstream in("data/config/space.json");
+    if (in.good()) in >> j;
+
+    json arr = json::array();
+    for (const auto& item : taken_items)
+    {
+        json obj;
+        obj["x"] = item.first;
+        obj["y"] = item.second;
+        arr.push_back(obj);
+    }
+    j["taken_items"] = arr;
+
+    std::ofstream out("data/config/space.json");
+    if (out.good()) out << j.dump(2) << std::endl;
+}
+
 inline void loadVarsFromConfig()
 {
     std::string_view t { "SPACE" };
@@ -57,6 +88,9 @@ inline void loadVarsFromConfig()
 
     // Restore the current planet
     getCurrentPlanet();
+
+    // Restore taken items
+    loadTakenItems();
 
     // Restore the player's position
     int max_dist = generalRand(25000);
@@ -83,6 +117,8 @@ inline void saveVarsToConfig()
     saveJsonValue("data/config/space.json", "game.location.y", static_cast<int>(floor(space_camera.y)));
     saveJsonValue("data/config/surface.json", "game.location.x", static_cast<int>(floor(surface_camera.x)));
     saveJsonValue("data/config/surface.json", "game.location.y", static_cast<int>(floor(surface_camera.y)));
+
+    saveTakenItems();
 }
 
 inline void setCurrentScreen(GameScreen scr)

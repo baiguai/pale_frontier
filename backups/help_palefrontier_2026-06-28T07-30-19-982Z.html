@@ -735,15 +735,15 @@
             </div>
 
 
-            <aside class="tree" id="tree" onclick="closeDialogs(); activateTree();"><ul><li><div class="node selected"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">Welcome to Pale Frontier</span></div></li><li><div class="node"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">About Pale Frontier</span></div></li><li><div class="node"><span class="twisty"><svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M3 1 L7 5 L3 9 Z" fill="currentColor"></path></svg></span><span class="title">Download and Install</span></div></li><li><div class="node"><span class="twisty"><svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M3 1 L7 5 L3 9 Z" fill="currentColor"></path></svg></span><span class="title">Customizing</span></div></li></ul></aside>
+            <aside class="tree" id="tree" onclick="closeDialogs(); activateTree();"><ul><li><div class="node"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">Welcome to Pale Frontier</span></div></li><li><div class="node"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">About Pale Frontier</span></div></li><li><div class="node"><span class="twisty"><svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M3 1 L7 5 L3 9 Z" fill="currentColor"></path></svg></span><span class="title">Download and Install</span></div></li><li><div class="node"><span class="twisty"><svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M1 3 L5 7 L9 3 Z" fill="currentColor"></path></svg></span><span class="title">Customizing</span></div><ul><li><div class="node"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">Assets</span></div></li><li><div class="node"><span class="twisty"><svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><path d="M1 3 L5 7 L9 3 Z" fill="currentColor"></path></svg></span><span class="title">Items</span></div><ul><li><div class="node"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">Item Assets</span></div></li><li><div class="node selected"><span class="twisty"><svg width="6" height="6" viewBox="0 0 6 6" xmlns="http://www.w3.org/2000/svg"><circle cx="3" cy="3" r="1" fill="currentColor"></circle></svg></span><span class="title">Item Actions</span></div></li></ul></li></ul></li></ul></aside>
             <section class="editor">
                 <div id="statusBar" class="status" onclick="closeDialogs();" ondblclick="toggleMobileMenu();" title="Double click to toggle Mobile Mode">
-                    <span class="pill" id="mode" style="display: block;">TREE</span>
+                    <span class="pill" id="mode" style="display: block;">INSERT</span>
                     <span class="pill" id="kind">NOTE</span>
-                    <span class="dim" id="path">/</span>
+                    <span class="dim" id="path">/Customizing/Items</span>
                     <span class="pill" id="msg"></span>
                 </div>
-                <textarea id="editorArea" spellcheck="false" class="" readonly="readonly"></textarea>
+                <textarea id="editorArea" spellcheck="false" class="insert-mode"></textarea>
             </section>
             </div>
 
@@ -765,14 +765,14 @@
     "title": "Welcome to Pale Frontier",
     "content": "Welcome to Pale Frontier\n\n...",
     "children": [],
-    "expanded": false
+    "expanded": true
   },
   {
     "id": "ehzp1nvm",
     "title": "About Pale Frontier",
     "content": "About Pale Frontier\n\n...",
     "children": [],
-    "expanded": false
+    "expanded": true
   },
   {
     "id": "lx8b2lhj",
@@ -784,7 +784,7 @@
         "title": "Downloading Pale Frontier",
         "content": "Downloading Pale Frontier\n\n...",
         "children": [],
-        "expanded": false
+        "expanded": true
       },
       {
         "id": "7x29wtxr",
@@ -806,7 +806,7 @@
         "title": "Assets",
         "content": "",
         "children": [],
-        "expanded": false
+        "expanded": true
       },
       {
         "id": "9hkw95s4",
@@ -818,20 +818,20 @@
             "title": "Item Assets",
             "content": "Item Assets\n\n...",
             "children": [],
-            "expanded": false
+            "expanded": true
           },
           {
             "id": "pcwp13in",
             "title": "Item Actions",
-            "content": "Item Actions\n\nRefuel:\n    Refuel replenishes the player's ships fuel supply while flying through space.\n    If the resulting amount of fuel is greater than 100, the fuel amount is set to 100.\n    \n    The configuration for this looks like:\n    \n    {\n      \"refuel\": {\n        \"value\": 10\n      }\n    }",
+            "content": "Item Actions\n\nRefuel:\n    Refuel replenishes the player's ships fuel supply while flying through space.\n    If the resulting amount of fuel is greater than 100, the fuel amount is set to 100.\n    \n    The configuration for this looks like:\n    \n{\n  \"refuel\": {\n  \"value\": 10\n  }\n    }",
             "children": [],
-            "expanded": false
+            "expanded": true
           }
         ],
-        "expanded": false
+        "expanded": true
       }
     ],
-    "expanded": false
+    "expanded": true
   }
 ];
             let bookmarks = [];
@@ -845,6 +845,10 @@
         "title": "Installing Pale Frontier"
     },
     {
+        "id": "y8xlmihv",
+        "title": "Welcome to Pale Frontier"
+    },
+    {
         "id": "ehzp1nvm",
         "title": "About Pale Frontier"
     },
@@ -855,10 +859,6 @@
     {
         "id": "pcwp13in",
         "title": "Item Actions"
-    },
-    {
-        "id": "y8xlmihv",
-        "title": "Welcome to Pale Frontier"
     }
 ];
 

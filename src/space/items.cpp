@@ -71,6 +71,11 @@ namespace space_loop
             {
                 Point global_sector { cam_x_int + x, cam_y_int + y };
 
+                bool alreadyTaken = false;
+                for (const auto& t : taken_items)
+                    if (t.first == global_sector.x && t.second == global_sector.y) { alreadyTaken = true; break; }
+                if (alreadyTaken) continue;
+
                 frand.seed = Frand::PerfectHash(global_sector.x, global_sector.y, game_init_seed);
 
                 if (frand.randInteger(0, item_distance) == 1)
@@ -94,7 +99,7 @@ namespace space_loop
                         std::cout << "\n\n";
                         std::cout << "Taken Item\n\n";
 
-                        configureItem(global_sector.x, global_sector.y);
+                        configureItem(global_sector.x, global_sector.y, texIndex);
 
                         space_camera.x = space_camera.x - item_sector_size;
                     }
@@ -107,9 +112,29 @@ namespace space_loop
 
     // ---- Configuration ------------------------------------------------------
 
-    void configureItem(int sector_x, int sector_y)
+    void configureItem(int sector_x, int sector_y, int texIndex)
     {
-        setCurrentPlanet();
+        taken_items.push_back({sector_x, sector_y});
+        saveTakenItems();
+
+        std::string itemPath = "data/space/items/item_" + std::to_string(texIndex) + ".json";
+        if (fileExists(itemPath))
+        {
+            json j;
+            std::ifstream in(itemPath);
+            in >> j;
+
+            for (auto& [action, data] : j.items())
+            {
+                if (action == "refuel")
+                {
+                    int value = data.value("value", 0);
+                    player_space_fuel += value;
+                    if (player_space_fuel > 100)
+                        player_space_fuel = 100;
+                }
+            }
+        }
     }
 
     //--------------------------------------------------------------------------

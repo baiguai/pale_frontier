@@ -1,6 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <vector>
 #include "../libs/raylib/raylib.h"
 #include "fastrand.hpp"
 
@@ -43,6 +44,8 @@ inline int player_surface_fuel { 100 };
 
 
 inline Frand::FastRand frand{};
+
+inline std::vector<std::pair<int,int>> taken_items;
 
 #include "main.hpp"
 
