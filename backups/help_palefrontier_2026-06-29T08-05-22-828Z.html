@@ -657,7 +657,7 @@
             </div>
 
             <div class="search-dialog" id="searchDialog" style="display: none;">
-                <input id="searchInput" placeholder="Search... (# for tags, r: regex, +: words)" type="text">
+                <input id="searchInput" placeholder="Search... (# for tags, #: regex, +: words)" type="text">
                 <div class="search-results" id="searchList"><div class="selected">Other Options</div></div>
             </div>
 
@@ -667,7 +667,7 @@
             </div>
 
             <div class="search-dialog" id="helpDialogUnified" style="display:none;">
-              <input id="helpFilter" type="text" placeholder="Filter help (Start with : to search keys only, !r for regex cheatsheet)...">
+              <input id="helpFilter" type="text" placeholder="Filter help (Start with : to search keys only)...">
               <div id="helpResults" class="search-results"></div>
               <p><a href="https://scribboleth.infinityfreeapp.com/" target="_blank">Full Help System</a></p>
               <p style="margin-top:6px;">Press ESC to close.</p>
@@ -689,7 +689,7 @@
                 </p>
             </div>
 
-            <div id="replaceDialog" style="display: none;">
+            <div id="replaceDialog" style="display: none; top: 15%; left: 5px; width: 230px;">
                 <h3>Find<span id="ttlReplace"> &amp; Replace<span></span></span></h3>
                 <label id="lblFind" for="searchText">Find</label>
                 <input id="searchText" type="text">
@@ -712,7 +712,7 @@
                 </div>
             </div>
 
-            <div id="saveAsDialog" style="display: none;">
+            <div id="saveAsDialog" style="display:none;">
                 <h3>Save As</h3>
                 <label>Title<br>
                     <input id="saveAsTitle" type="text" style="width:100%; background:var(--input-bg); color:var(--input-fg); border:1px solid var(--border); margin-bottom:10px;">
@@ -743,7 +743,7 @@
                     <span class="dim" id="path">/</span>
                     <span class="pill" id="msg"></span>
                 </div>
-                <textarea id="editorArea" spellcheck="false" readonly="readonly" class=""></textarea>
+                <textarea id="editorArea" spellcheck="false" class="" readonly="readonly"></textarea>
             </section>
             </div>
 
@@ -1227,23 +1227,6 @@
                     { key: "Control+;", mode: "VISUAL", description: "Create/Update table" },
                     { key: "Escape", mode: "INSERT", description: "Exit to NORMAL mode" },
                     { key: "<number>", mode: "NORMAL", description: "If you enter a number first, some commands will repeat that many times." }
-                ];
-
-                let helpRegexLib = [
-                    { key: "^hello", mode: "", description: "Lines starting with 'hello'" },
-                    { key: "hello$", mode: "", description: "Lines ending with 'hello'" },
-                    { key: "^hello$", mode: "", description: "Lines containing exactly 'hello'" },
-                    { key: "[Hh]ello)", mode: "", description: "Lines containing 'hello' or 'Hello'" },
-                    { key: "\bhello\b", mode: "", description: "Matches only 'hello' as a whole word" },
-                    { key: "hello.*world", mode: "", description: "Matches 'hello' then 'world'" },
-                    { key: "hello|world", mode: "", description: "Matches 'hello' or 'world'" },
-                    { key: "?=.*hello)(?=.*world)", mode: "", description: "Matches 'hello' and 'world'" },
-                    { key: "^(?=.*hello)(?=.*world).*$", mode: "", description: "Matches 'hello' and 'world' in any order" },
-                    { key: "^.{100,}$", mode: "", description: "Matches lines with 100+ characters" },
-                    { key: "^.{0,10}$", mode: "", description: "Matches lines with 10 or fewer characters" },
-                    { key: "\d+", mode: "", description: "Matches lines containing only digits" },
-                    { key: "\w+@\w+\.\w+", mode: "", description: "Matches lines containing email-like patterns" },
-                    { key: "http\S+", mode: "", description: "Matches lines containing URLs" },
                 ];
 
                 function ensureSelection(){
@@ -4625,7 +4608,6 @@
                 if (mode === 'ReadOnly') data = helpReadOnly;
                 else if (mode === 'VimEnabled') data = helpVimEnabled;
                 else data = helpVimDisabled;
-                let rgxData = helpRegexLib;
 
                 // --- Normalize comparison function ---
                 function matches(h, term) {
@@ -4652,7 +4634,7 @@
                     }
                     results.innerHTML = list
                     .map(h => {
-                        const modeSuffix = h.mode && h.mode.trim() !== "" ? ` <span class="dim">(${escapeHtml(h.mode)}) - </span>` : "&nbsp;&nbsp;";
+                        const modeSuffix = h.mode && h.mode.trim() !== "" ? ` <span class="dim">(${escapeHtml(h.mode)}) - </span>` : "";
                         return `<div><b>${escapeHtml(h.key)}</b>${modeSuffix}${escapeHtml(h.description)}</div>`;
                     })
                     .join('');
@@ -4678,12 +4660,6 @@
                 input.oninput = () => {
                     const term = input.value.trim();
                     if (!term) return renderList(data);
-
-                    if (term === "!r") {
-                        renderList(rgxData);
-                        return;
-                    }
-
                     renderList(data.filter(h => matches(h, term)));
                 };
             }
@@ -5535,6 +5511,7 @@
                 }, 3000);                               // wait 3s after last change
             }
 </script>
+
 
 
 </body></html>
