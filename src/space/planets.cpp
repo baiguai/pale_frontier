@@ -1,6 +1,7 @@
 #include <vector>
 #include <filesystem>
 #include <algorithm>
+#include <iomanip>
 #include "planets.hpp"
 namespace fs = std::filesystem;
 
@@ -14,7 +15,7 @@ namespace space_loop
         std::string dir = "data/space/assets/planets/";
         if (!fs::exists(dir))
         {
-            std::cout << "ERROR:: Assets DIR does not exist.\n";
+            std::cout << "ERROR:: Planets assets DIR does not exist.\n";
             return;
         }
 
@@ -59,8 +60,6 @@ namespace space_loop
         int sec_num_x = GetScreenWidth() / planet_sector_size;
         int sec_num_y = GetScreenHeight() / planet_sector_size;
 
-        float radius = planet_sector_size * 3.0;
-
         int cam_x_int = static_cast<int>(floor(space_camera.x));
         int cam_y_int = static_cast<int>(floor(space_camera.y));
         float cam_x_frac = space_camera.x - floor(space_camera.x);
@@ -76,6 +75,11 @@ namespace space_loop
 
                 if (frand.randInteger(0, planet_distance) == 1)
                 {
+                    if (frand.randInteger(0, item_distance) == 1)
+                    {
+                        return GameScreen::SPACE;
+                    }
+
                     int texIndex = frand.randInteger(0, planetTextures.size());
 
                     float draw_x = (x - cam_x_frac) * planet_sector_size;
@@ -92,7 +96,15 @@ namespace space_loop
                     if (draw_x <= centerX && centerX <= draw_x + texW &&
                         draw_y <= centerY && centerY <= draw_y + texH)
                     {
-                        std::cout << "Landed on the planet: " << global_sector.x << ", " << global_sector.y << "\n";
+                        std::cout << "\n\n";
+                        std::cout << "Landed on the planet: " << global_sector.x << ", " << global_sector.y << "\n\n";
+                        std::cout << "\"game\": {\n";
+                        std::cout << std::setw(2) << std::setfill(' ') << "\"location\": {\n";
+                        std::cout << std::setw(4) << std::setfill(' ') << "\"x\": " << (global_sector.x - 20) << ",\n";
+                        std::cout << std::setw(4) << std::setfill(' ') << "\"y\": " << global_sector.y << "\n";
+                        std::cout << std::setw(2) << std::setfill(' ') << "}\n";
+                        std::cout << "},\n\n";
+
                         space_camera.x = space_camera.x - planet_sector_size;
                         configurePlanet(global_sector.x, global_sector.y);
                         return GameScreen::SURFACE;
@@ -111,7 +123,7 @@ namespace space_loop
     {
         current_planet.x = sector_x;
         current_planet.y = sector_y;
-        setCurrentPlanet(sector_x, sector_y);
+        setCurrentPlanet();
     }
 
     //--------------------------------------------------------------------------
