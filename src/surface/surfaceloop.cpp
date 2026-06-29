@@ -5,6 +5,7 @@ namespace fs = std::filesystem;
 namespace surface_loop
 {
     float rotation { 0.0f };
+    int frame_count { 1 };
 
     static double elevation_deep_water;
     static double elevation_water;
@@ -127,6 +128,7 @@ namespace surface_loop
 
     static void loadPorts(const std::string& path)
     {
+        surface_ports.clear();
         std::ifstream in(path);
         if (!in.good()) return;
         json j; in >> j;
@@ -322,6 +324,13 @@ namespace surface_loop
                 return GameScreen::QUIT;
             }
 
+            if (frame_count % 10800 == 0)
+            {
+                saveVarsToConfig();
+                std::cout<<"Saved configuration.\n";
+                frame_count = 0;
+            }
+
             BeginDrawing();
 
                 ClearBackground(GREEN);
@@ -384,6 +393,8 @@ namespace surface_loop
                 }
 
             EndDrawing();
+
+            ++frame_count;
         }
 
         unloadPlayerTexture();

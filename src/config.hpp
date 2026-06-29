@@ -29,10 +29,41 @@ inline void getCurrentPlanet()
     current_planet.y = readJsonValue("data/config/game.json", "startup.planet.y", 0);
 }
 
-inline void setCurrentPlanet(int sector_x, int sector_y)
+inline void setCurrentPlanet()
 {
     saveJsonValue("data/config/game.json", "startup.planet.x", current_planet.x);
     saveJsonValue("data/config/game.json", "startup.planet.y", current_planet.y);
+}
+
+inline void loadTakenItems()
+{
+    std::ifstream in("data/config/space.json");
+    if (!in.good()) return;
+    json j; in >> j;
+    if (!j.contains("taken_items")) return;
+    taken_items.clear();
+    for (const auto& o : j["taken_items"])
+        taken_items.push_back({ o["x"], o["y"] });
+}
+
+inline void saveTakenItems()
+{
+    json j;
+    std::ifstream in("data/config/space.json");
+    if (in.good()) in >> j;
+
+    json arr = json::array();
+    for (const auto& item : taken_items)
+    {
+        json obj;
+        obj["x"] = item.first;
+        obj["y"] = item.second;
+        arr.push_back(obj);
+    }
+    j["taken_items"] = arr;
+
+    std::ofstream out("data/config/space.json");
+    if (out.good()) out << j.dump(2) << std::endl;
 }
 
 inline void loadVarsFromConfig()
@@ -48,6 +79,8 @@ inline void loadVarsFromConfig()
     else
         currentScreen = GameScreen::SPACE; // Later this may be the menu or similar.
 
+    player_space_fuel = readJsonValue("data/config/space.json", "player.fuel", 100);
+    item_distance = readJsonValue("data/config/space.json", "items.distance", 180000);
     planet_distance = readJsonValue("data/config/space.json", "planets.distance", 64000);
     star_distance_01 = readJsonValue("data/config/space.json", "stars.lvl1.distance", 9000);
     star_distance_02 = readJsonValue("data/config/space.json", "stars.lvl2.distance", 3000);
@@ -55,6 +88,9 @@ inline void loadVarsFromConfig()
 
     // Restore the current planet
     getCurrentPlanet();
+
+    // Restore taken items
+    loadTakenItems();
 
     // Restore the player's position
     int max_dist = generalRand(25000);
@@ -65,10 +101,12 @@ inline void loadVarsFromConfig()
     surface_camera.y = readJsonValue("data/config/surface.json", "game.location.y", 0);
 }
 
-inline void saveVarsFromConfig()
+inline void saveVarsToConfig()
 {
     saveJsonValue("data/config/game.json", "game.init.seed", game_init_seed);
 
+    saveJsonValue("data/config/space.json", "player.fuel", player_space_fuel);
+    saveJsonValue("data/config/space.json", "items.distance", item_distance);
     saveJsonValue("data/config/space.json", "planets.distance", planet_distance);
     saveJsonValue("data/config/space.json", "stars.lvl1.distance", star_distance_01);
     saveJsonValue("data/config/space.json", "stars.lvl2.distance", star_distance_02);
@@ -79,6 +117,8 @@ inline void saveVarsFromConfig()
     saveJsonValue("data/config/space.json", "game.location.y", static_cast<int>(floor(space_camera.y)));
     saveJsonValue("data/config/surface.json", "game.location.x", static_cast<int>(floor(surface_camera.x)));
     saveJsonValue("data/config/surface.json", "game.location.y", static_cast<int>(floor(surface_camera.y)));
+
+    saveTakenItems();
 }
 
 inline void setCurrentScreen(GameScreen scr)

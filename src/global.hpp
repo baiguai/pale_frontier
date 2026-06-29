@@ -1,6 +1,7 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <vector>
 #include "../libs/raylib/raylib.h"
 #include "fastrand.hpp"
 
@@ -9,6 +10,9 @@ inline int game_init_seed;
 const int window_height { 1080 };
 const int window_width { 1920 };
 const char* const title { "Pale Frontier" };
+
+const int item_sector_size { 13 };
+inline int item_distance { 0 };
 
 inline Vector2 space_camera{ 0, 0 };
 inline float space_speed {0.5f };
@@ -34,7 +38,14 @@ inline Vector2 surface_camera{ 0, 0 };
 inline float surface_speed {0.5f };
 const int surface_sector_size { 8 };
 
+
+inline int player_space_fuel { 100 };
+inline int player_surface_fuel { 100 };
+
+
 inline Frand::FastRand frand{};
+
+inline std::vector<std::pair<int,int>> taken_items;
 
 #include "main.hpp"
 
