@@ -97,6 +97,7 @@ inline void loadVarsFromConfig()
     space_camera.x = readJsonValue("data/config/space.json", "game.location.x", max_dist);
     max_dist = generalRand(22000);
     space_camera.y = readJsonValue("data/config/space.json", "game.location.y", max_dist);
+    player_surface_fuel = readJsonValue("data/config/surface.json", "player.fuel", 100);
     surface_camera.x = readJsonValue("data/config/surface.json", "game.location.x", 0);
     surface_camera.y = readJsonValue("data/config/surface.json", "game.location.y", 0);
 }
@@ -115,6 +116,7 @@ inline void saveVarsToConfig()
     // Store the player's position
     saveJsonValue("data/config/space.json", "game.location.x", static_cast<int>(floor(space_camera.x)));
     saveJsonValue("data/config/space.json", "game.location.y", static_cast<int>(floor(space_camera.y)));
+    saveJsonValue("data/config/surface.json", "player.fuel", player_surface_fuel);
     saveJsonValue("data/config/surface.json", "game.location.x", static_cast<int>(floor(surface_camera.x)));
     saveJsonValue("data/config/surface.json", "game.location.y", static_cast<int>(floor(surface_camera.y)));
 
