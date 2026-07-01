@@ -6,6 +6,7 @@ namespace surface_loop
 {
     float rotation { 0.0f };
     int frame_count { 1 };
+    int fuel_usage_count { 1 };
 
     static double elevation_deep_water;
     static double elevation_water;
@@ -324,11 +325,19 @@ namespace surface_loop
                 return GameScreen::QUIT;
             }
 
+            // auto save
             if (frame_count % 10800 == 0)
             {
                 saveVarsToConfig();
                 std::cout<<"Saved configuration.\n";
                 frame_count = 0;
+            }
+
+            // fuel usage
+            if (fuel_usage_count % (20 * 60) == 0)
+            {
+                --player_surface_fuel;
+                fuel_usage_count = 0;
             }
 
             BeginDrawing();
@@ -343,21 +352,25 @@ namespace surface_loop
                 {
                     rotation = 180.0f;
                     surface_camera.y += moveAmount;
+                    ++fuel_usage_count;
                 }
                 if (IsKeyDown(KEY_I) || IsKeyDown(KEY_UP))
                 {
                     rotation = 0.0f;
                     surface_camera.y -= moveAmount;
+                    ++fuel_usage_count;
                 }
                 if (IsKeyDown(KEY_J) || IsKeyDown(KEY_LEFT))
                 {
                     rotation = 270.0f;
                     surface_camera.x -= moveAmount;
+                    ++fuel_usage_count;
                 }
                 if (IsKeyDown(KEY_L) || IsKeyDown(KEY_RIGHT))
                 {
                     rotation = 90.0f;
                     surface_camera.x += moveAmount;
+                    ++fuel_usage_count;
                 }
 
                 {
